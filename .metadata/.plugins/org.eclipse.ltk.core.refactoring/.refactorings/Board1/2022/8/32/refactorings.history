@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Board1/NewFile.html&apos; to &apos;index2.php&apos;" description="Rename resource &apos;NewFile.html&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="NewFile.html" name="index2.php" stamp="1659677370925" updateReferences="true"/>
+</session>
