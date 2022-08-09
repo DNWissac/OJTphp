@@ -1,23 +1,20 @@
 <?php
-// DB연결
-include 'dbconn.php';
+include 'pdo.php';
 
 // DB조회
-$db_data_comeon_qr = "SELECT nListSeq, sTitle, sContent, DATE_FORMAT(dtTimesStamp, '%Y-%m-%d') as dtTimesStamp
-                      FROM tBoardList
-                      ORDER BY dtTimesStamp desc;";
-
-// SQL 명령어
-$db_data_comeon_rs = mysqli_query($db, $db_data_comeon_qr);
-
-// DB 리스트 꺼내오기
-while($row = mysqli_fetch_array($db_data_comeon_rs)) {
-    echo '<tr>'.'<td>'.$row['nListSeq'].'</td>';
-    echo '<td>'.$row['sTitle'].'</td>';
-    echo '<td>'.$row['sContent'].'</td>';
-    echo '<td>'.$row['dtTimesStamp'].'</td>'.'</tr>';
+try
+{
+    $sql = "SELECT sUserEmail, sNickName
+        FROM tUserList;";
+    foreach($connect->query($sql) as $field) {
+        echo '<tr>'.'<td>'.$field['sUserEmail'].'</td>';
+        echo '<td>'.$field['sNickName'].'</td>'.'</tr>';
+    } 
+}
+catch(PDOException $ex)
+{
+    echo "레코드 선택 실패!: ".$ex->getMessage()."<br>";
 }
 
-mysqli_close($db);
 
-//echo "접속 성공";
+$connect = null;

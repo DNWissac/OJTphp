@@ -1,0 +1,8 @@
+<?php
+// DB연결
+include 'dbconn.php';
+
+// DB조회
+$db_data_comeon_qr = "SELECT nListSeq, sTitle, sContent, DATE_FORMAT(dtTimesStamp, '%Y-%m-%d') as dtTimesStamp
+                      FROM tBoardList
+                      ORDER BY dtTimesStamp desc;";

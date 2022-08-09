@@ -1,3 +1,0 @@
-<?php
-// DB연결
-'include/db_conn.php';

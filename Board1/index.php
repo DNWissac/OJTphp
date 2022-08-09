@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<script type="text/javascript" src="//code.jquery.com/jquery.min.js"></script>
 <?php 
     // 로그인 프로세스를 위한 세션처리
     session_start();
@@ -10,6 +6,11 @@
     $s_id = isset($_SESSION["s_id"])? $_SESSION["s_id"]:"";
     $s_name = isset($_SESSION["s_name"])? $_SESSION["s_name"]:"";
 ?>
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+
 
 <script>
 
@@ -59,10 +60,8 @@
 
 
 <!-- 부트스트랩 css, js-->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" 
-rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" 
-integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../css/bootstrap.min.css">
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
 
 </head>
 <body>
@@ -73,10 +72,10 @@ integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4
     <div class="signBtnDiv" style="text-align: right;">
     	<!-- 비 로그인 시 -->
     	<?php if(!$s_id){?>
-        <button type="button" class="btn btn-primary" onclick="location.href='view/signin.php'">
+        <button type="button" class="btn btn-primary" onclick="location.href='view/signinform.php'">
     		로그인
     	</button>
-    	<button type="button" class="btn btn-primary" onclick="location.href='view/signup.php'">
+    	<button type="button" class="btn btn-primary" onclick="location.href='view/signupform.php'">
     		회원가입
     	</button>
     	<!-- 로그인 시 -->
@@ -106,16 +105,10 @@ integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4
     	<thead>
         	<tr>
         		<th>
-        			번호
+        			이메일
         		</th>
         		<th>
-        			제목
-        		</th>
-        		<th>
-        			내용
-        		</th>
-        		<th>
-        			날짜
+        			닉네임
         		</th>
         	</tr>
         </thead>

@@ -1,0 +1,17 @@
+<?php
+// DB연결
+include 'pdo.php';
+
+// DB조회
+$sql = "SELECT sUserEmail, sNickName
+        FROM tUserList;";
+
+// DB 리스트 꺼내오기
+foreach($connect->query($sql) as $field) {
+    echo '<tr>'.'<td>'.$field['nListSeq'].'</td>';
+    echo '<td>'.$row['dtTimesStamp'].'</td>'.'</tr>';
+}
+
+mysqli_close($db);
+
+//echo "접속 성공";

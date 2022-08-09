@@ -1,6 +1,0 @@
-<?php
-// DB연결
-'db_conn.php';
-
-// DB조회
-$db_data_comeon_qr = "SELECT nListSeq, sTitle, sContent, dtTimesStamp"

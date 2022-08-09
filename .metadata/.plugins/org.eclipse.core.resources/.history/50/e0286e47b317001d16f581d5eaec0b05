@@ -1,0 +1,18 @@
+<?php
+$db = new mysqli('127.0.0.1', 'root', 'php123', 'dbBoard');
+
+$dbHost = "localhost";      // 호스트 주소(localhost, 120.0.0.1)
+$dbName = "test_db";        // 데이타 베이스(DataBase) 이름
+$dbUser = "tester";         // DB 아이디
+$dbPass = "1q2w3e";         // DB 패스워드
+
+
+if($db->connect_error) {
+    
+    die('데이터베이스 연결에 문제가 있습니다. 관리자에게 문의 바랍니다.');
+    
+}
+
+
+
+$db->set_charset('utf8');

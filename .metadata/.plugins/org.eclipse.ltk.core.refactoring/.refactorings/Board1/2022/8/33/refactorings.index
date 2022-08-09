@@ -1,0 +1,4 @@
+1660008799824	Rename resource 'checkemail'
+1660022674757	Move 'checkemail.php' to 'View'
+1660022728591	Move 'checkemail.php' to 'Back'
+1660029989066	Move 'signup.php' to 'DAO'

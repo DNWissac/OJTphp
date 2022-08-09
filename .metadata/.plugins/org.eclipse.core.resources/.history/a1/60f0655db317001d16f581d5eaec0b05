@@ -1,0 +1,7 @@
+<?php
+$dbHost = "127.0.0.1";      // 호스트 주소(localhost, 120.0.0.1)
+$dbName = "dbBoard";        // 데이타 베이스(DataBase) 이름
+$dbUser = "root";           // DB 아이디
+$dbPass = "php123";         // DB 패스워드
+
+$pdo = new PDO("mysql:host={$dbHost};dbname={$dbName}", $dbUser, $dbPass);
