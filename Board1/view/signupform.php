@@ -7,8 +7,6 @@
 
 	$().ready(function()
 	{
-
-		
 		// 유효성 검사
 		$("#signupBtn").click(function()
 		{
@@ -59,9 +57,9 @@
 
 			// 이메일 중복확인
 			$.post(
-					"../Back/checkemail.php",
+					"../back/DAO/emailCheckDAO.php",
 					{ email : email },
-					function (data){alert(data);
+					function (data){
 						if (data >= 1){
 							$("#inputEmail").focus();
 							$(".emailMsg").text("이미 존재하는 이메일입니다.");
@@ -139,20 +137,22 @@
 				errCount++;
 			}
 
+			// 닉네임 중복확인
 			$.post(
-					"../Back/checknickname.php",
+					"../back/DAO/nickNameCheckDAO.php",
 					{ nickName : nickName },
 					function (data){
 						if (data >= 1){
 							$("#inputNickName").focus();
-							$(".nickNameMsg").text("이미 존재하는 닉네임입니다.");
-							$(".nickNameMsg").css("display", "inline");
-							errCount++;
+							$(".nickMsg").text("이미 존재하는 닉네임입니다.");
+							$(".nickMsg").css("display", "inline");
+							return;
 						}
 					}
 					
 			);
 
+			// 모든 조건이 충족되면 submit
 			if (errCount == 0)
 			{
 				$(".signform").submit();
@@ -163,49 +163,23 @@
 	});
 
 
+/* 
+function memberCheck()
+{
+	
+}
+
+ */	
 </script>
 
-<style type="text/css">
-    
-    /* 섹션 크기 */
-    .bg-light{
-            height: 1053px;
-            padding-top:55px;
-            padding-bottom:75px;
-    }
-    .flex-fill.mx-xl-5.mb-2{
-            margin: 0 auto;
-            width : 700px;
-            padding-right: 7rem;
-            padding-left: 7rem;
-    }
-    
-    /* 입력창 */
-    .container.py-4{
-            margin: 0 auto;
-            width : 503px;
-    }
-    /* 가입버튼 */
-    .d-grid.gap-2{
-            padding-top: 30px;
-    }
-    /* 에러메시지 */
-    .errMsg{
-            color: red;
-            display: none;
-    }
-
-
-    
-</style>
+<!-- 회원가입/로그인 용 css -->
+<link rel="stylesheet" href="../css/sign.css">
 <title>회원가입</title>
 
 
 <!-- 부트스트랩 css, js-->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" 
-rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" 
-integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../css/bootstrap.min.css">
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
 
 </head>
 <body>
@@ -214,11 +188,11 @@ integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4
     	<h3 style="text-align: center;">회원가입</h3>
     	
         <div>
-            <form class="signform" action="../Back/signup.php">
+            <form class="signform" action="../back/DAO/signupDAO.php" method="post">
                 <div class="form-group">
                     <label for="inputEmail" class="form-label mt-4">이메일</label>
                     <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp"
-                    placeholder="ex)example@gmail.com">
+                    placeholder="ex)example@gmail.com" name="userEmail">
                     <div>
                     	<span class="errMsg emailMsg"></span>
                     </div>
@@ -226,7 +200,8 @@ integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4
                 
                 <div class="form-group has-success">
                     <label for="inputPassword" class="form-label mt-4">비밀번호</label>
-                    <input type="password" class="form-control" id="inputPassword" placeholder="영문, 숫자, 특수문자를 혼합한 8~20자리">
+                    <input type="password" class="form-control" id="inputPassword" 
+                    placeholder="영문, 숫자, 특수문자를 혼합한 8~20자리" name="userPassword">
                     <div>
                     	<span class="errMsg pwdMsg"></span>
                     </div>
@@ -242,7 +217,8 @@ integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4
                 
                 <div class="form-group">
                     <label for="inputNickName" class="form-label mt-4">닉네임</label>
-                    <input type="text" class="form-control" id="inputNickName" placeholder="한글 1~10자, 영문 및 숫자 2~20자 이내">
+                    <input type="text" class="form-control" id="inputNickName" 
+                    placeholder="한글 1~10자, 영문 및 숫자 2~20자 이내" name="userNickName">
                     <div>
                     	<span class="errMsg nickMsg">닉네임을 입력해 주세요.</span>
                     </div>
@@ -250,11 +226,10 @@ integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4
                 
                 <div class="d-grid gap-2">
                     <button type="button" class="btn btn-primary btn-lg" id="signupBtn">가입하기</button>
-                    <button type="button" class="btn btn-secondary" onclick="location.href='signinform.php'">
+                    <button type="button" class="btn btn-secondary" onclick="location.href='../index.php'">
                     	취소
                     </button>
                 </div>
-                <a href="../index.php">메인페이지로 이동</a>
             </form>
         </div>
         

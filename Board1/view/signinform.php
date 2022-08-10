@@ -4,26 +4,10 @@
 <meta charset="UTF-8">
 <script type="text/javascript" src="../js/jquery.min.js"></script>
 <script>
-
 </script>
 
-<style type="text/css">
-
-    .btndiv
-    {
-        text-align: center;
-    }
-    .container
-    {
-        padding-top: 20%;
-        text-align: center;
-    }
-    .mb-4
-    {
-        text-align: left;
-    }
-    
-</style>
+<!-- 회원가입/로그인 용 css -->
+<link rel="stylesheet" href="../css/sign.css">
 <title>로그인</title>
 
 
@@ -34,35 +18,39 @@
 </head>
 <body>
 
-<div class="container">
-	<h3 style="text-align: center;">로그인</h3>
-	
-    <div class="signupDiv" style="width:50%; display: inline-block;">
-        <form>
-            <div class="mb-4">
-                <label for="exampleInputEmail1" class="form-label">이메일</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            </div>
-            <div class="mb-4">
-                <label for="exampleInputPassword1" class="form-label">비밀번호</label>
-                <input type="password" class="form-control" id="exampleInputPassword1">
-            </div>
-            <div class="btndiv">
-                <button type="submit" class="btn btn-primary">로그인</button>
-                <button type="button" class="btn btn-primary" onclick="location.href='signupform.php'">
-                	회원가입
-                </button>
-            </div>
-            <a href="../index.php">메인페이지로 이동</a>
-        </form>
+<section class="bg-light">
+    <div class="container py-4">
+    	<h3 style="text-align: center;">로그인</h3>
+    	
+        <div>
+            <form class="signform" action="../back/DAO/signinDAO.php" method="post">
+                <div class="form-group">
+                    <label for="inputEmail" class="form-label mt-4">이메일</label>
+                    <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" name="userEmail">
+                    <div>
+                    	<span class="errMsg emailMsg"></span>
+                    </div>
+                </div>
+                
+                <div class="form-group has-success">
+                    <label for="inputPassword" class="form-label mt-4">비밀번호</label>
+                    <input type="password" class="form-control" id="inputPassword" name="userPassword">
+                    <div>
+                    	<span class="errMsg pwdMsg"></span>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg" id="signinBtn">로그인</button>
+                    <button type="button" class="btn btn-secondary" onclick="location.href='../index.php'">
+                    	취소
+                    </button>
+                </div>
+            </form>
+        </div>
+        
     </div>
-
-	
-    
-</div>
-
-
-
+</section>
 
 
 </body>

@@ -1,0 +1,23 @@
+<?php
+
+<div class="signBtnDiv" style="text-align: right;">
+<!-- 비 로그인 시 -->
+<?php if(!isset($_SESSION['userEmail'])){?>
+    	    <button type="button" class="btn btn-primary" onclick="location.href='view/signinform.php'">
+        		로그인
+        	</button>
+        	<button type="button" class="btn btn-primary" onclick="location.href='view/signupform.php'">
+        		회원가입
+        	</button>
+    	<!-- 로그인 시 -->
+    	<?php } else{?>
+        	<p>『<?php echo $_SESSION['userNickName'];?>』님, 안녕하세요.</p>
+    
+        		<?php if($_SESSION['userAdmin'] == 1){ ?>
+        		<p>관리자 계정입니다.</p>
+        		<?php };?>
+        	<button type="button" class="btn btn-primary" onclick="location.href='back/logout.php'">
+        		로그아웃
+        	</button>
+		<?php };?>
+    </div>

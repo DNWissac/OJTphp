@@ -1,0 +1,13 @@
+@charset "UTF-8";
+.bg-dark{
+        height: 1000px;
+        padding-top:55px;
+        padding-bottom:75px;
+        color: white;
+}
+.flex-fill.mx-xl-5.mb-2{
+        margin: 0 auto;
+        width : 700px;
+        padding-right: 7rem;
+        padding-left: 7rem;
+}

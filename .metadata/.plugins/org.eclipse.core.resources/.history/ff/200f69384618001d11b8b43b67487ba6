@@ -1,0 +1,22 @@
+<?php
+// DB연결
+include 'pdo.php';
+
+if ($_POST['email'] != null || $_POST['email'] != "") 
+    $userEmail = $_POST['email'];
+
+// SQL문
+try 
+{
+    $sql = "SELECT count(*) as count
+                      FROM tUserList
+                      WHERE sUserEmail = '$userEmail'";
+    foreach ($connect->query($sql) as $field){
+        echo $field['count'];
+    }
+    
+} catch (PDOException $ex) 
+{
+    echo "레코드 선택 실패!: ".$ex->getMessage()."<br>";
+}
+

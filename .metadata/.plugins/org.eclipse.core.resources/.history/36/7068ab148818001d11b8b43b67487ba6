@@ -1,0 +1,30 @@
+<?php
+
+include 'pdo.php';
+
+// 영화 등록폼에서 받은 정보
+$user_email = $_POST['movieTitle'];
+$user_password = $_POST['movieStory'];
+$user_nickName = $_POST['movieImage'];
+$user_nickName = $_POST['movieDate'];
+
+// 비밀번호 암호화
+$encrypted_passwd = password_hash($user_password, PASSWORD_DEFAULT);
+
+try
+{
+    $sql = "INSERT INTO tUserList(sUserEmail, sPassword, sNickName) 
+            VALUES('$user_email', '$encrypted_passwd', '$user_nickName')";
+    $connect->exec($sql);
+    echo "<script>alert('회원가입에 성공했습니다.');";
+    echo "location.href='../../index.php';</script>";
+}
+catch(PDOException $ex)
+{
+    echo "<script>alert('회원가입에 실패했습니다.<br> 에러: ".$ex->getMessage()."')</script>";
+}
+
+$connect = null;
+
+echo "<script>location.href='../../index.php'</script>";
+

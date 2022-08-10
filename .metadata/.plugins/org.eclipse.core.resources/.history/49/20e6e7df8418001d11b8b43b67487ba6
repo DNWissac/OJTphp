@@ -1,0 +1,19 @@
+@charset "UTF-8";
+.bg-dark{
+        height: 1000px;
+        padding-top:55px;
+        padding-bottom:75px;
+        color: white;
+}
+/* 입력창 */
+.container.py-4{
+        margin: 0 auto;
+        width : 520px;
+}
+.signform{
+	text-align: center;
+	
+}
+.inputStory{
+	height: 200px
+}

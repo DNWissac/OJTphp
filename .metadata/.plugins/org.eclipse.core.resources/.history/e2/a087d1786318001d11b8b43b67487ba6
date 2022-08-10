@@ -1,0 +1,25 @@
+<?php
+
+include 'pdo.php';
+
+// 5.3.7 버전 이하 password_hash
+include "../util/password.php";
+
+// 로그인 폼에서 받은 정보
+$user_email = $_POST['userEmail'];
+$user_password = $_POST['usePassword'];
+
+try
+{
+    $sql = "SELECT sUserEmail, sPassword FROM tUserList 
+            WHERE sUserEmail = '$user_email'";
+    foreach($connect->query($sql) as $field) {
+             = $field['sPassword']
+    }
+}
+catch(PDOException $ex)
+{
+    echo "<script>alert('회원가입에 실패했습니다.<br> 에러: ".$ex->getMessage()."')</script>";
+}
+
+echo "<script>location.href='../../index.php'</script>";
