@@ -1,46 +1,18 @@
 <!DOCTYPE html>
 <?php 
-    // 로그인 프로세스를 위한 세션처리
-    session_start();
-   
+
+    // 페이징 처리
+    if($page == null)
+        $page = 1;
+    
+    // 한 페이지당 보여질 게시글 수
+    $psize = 9;
+    
 ?>
 <html>
 <head>
 <meta charset="UTF-8">
 <script type="text/javascript" src="../js/jquery.min.js"></script>
-
-<script>
-
-	$().ready(function(){
-
-		// 최신순으로 조회버튼 클릭 시
-		$("#latestList").click(function(){
-			//alert("테스트");
-			
-			$.ajax({
-				url:"back/DAO/movieListDAO.php",
-				type:"post",
-				data: $("form").serialize()
-			}).done(function(data){
-				$("#input_data").html(data);
-			});
-			
-		});
-
-		// 초기화 버튼 클릭 시
-		$("#resetList").click(function(){
-			$("#input_data").empty();
-		});
-
-		$("#movieInsertBtn").click(function(){
-			location.href="/view/movieinsertform.php";
-		});
-		
-	});
-	
-	
-</script>
-
 <style type="text/css">
 
     table
@@ -53,6 +25,11 @@
     table>th,td
     {
         width: 20%;
+    }
+    img
+    {
+        width: 100px;
+        height: 150px;
     }
     
 </style>
@@ -77,8 +54,9 @@
 	<button type="button" class="btn btn-dark" id="movieInsertBtn">영화 등록</button>
 	<?php }?>
 	
-    <table class="table-light" style="border: 1px solid;">
-    	<thead>
+    <table class="table-light" id="input_data" style="border: 1px solid;">
+        <!--
+        <thead>
         	<tr>
         		<th>영화제목</th>
         		<th>영화내용</th>
@@ -89,7 +67,8 @@
         </thead>
         
         <tbody id="input_data">
-        </tbody>
+        </tbody> 
+        -->
     	
     </table>
 </div>
