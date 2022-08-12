@@ -1,3 +1,0 @@
-<?php
-$conn = mysqli_connect("localhost", "데이타베이스이름", "DB 접속 비밀번호", "데이타베이스 접속정보");
-

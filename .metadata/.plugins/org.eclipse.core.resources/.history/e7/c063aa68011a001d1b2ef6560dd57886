@@ -1,0 +1,25 @@
+<?php
+class MovieService {
+    
+    
+    public function movieInsert()
+    {
+        
+    }
+    
+    public function movieUpdate()
+    {
+        
+    }
+    
+    public function movieDelete()
+    {
+        
+    }
+    
+    public function movieList()
+    {
+        
+    }
+    
+}

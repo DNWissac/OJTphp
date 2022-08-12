@@ -1,0 +1,10 @@
+<?php
+// DAO include
+include 'movieDAO.php';
+
+// 영화 등록폼에서 받은 정보
+$movie_seq = $_GET['seq'];
+
+$dao = new movieDAO();
+
+echo "<script>location.href='../../index.php'</script>";

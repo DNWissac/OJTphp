@@ -7,12 +7,12 @@
 
 	$().ready(function()
 	{
-		var seqNum = <?php echo $_GET['seq']?>
+		var movie_seq = <?php echo $_GET['seq']?>
 
 		$.ajax({
 			url:"../back/Service/movies.php",
 			type:"get",
-			data:{seqNum:seqNum},
+			data:{movie_seq:movie_seq},
 			error : function(){
 	            alert('에러');
 	        },
@@ -28,13 +28,13 @@
 	{
 		if (confirm("정말로 삭제하시겠습니까?"))
 		{
-			location.href="../back/DAO/movieDeleteDAO.php?seq="+<?php echo $_GET['seq']?>;
+			location.href="../back/Service/movieDelete.php?seq="+<?php echo $_GET['seq']?>;
 		}
 	}
 	
 	function updateClick()
 	{
-		location.href="../back/DAO/movieUpdateDAO.php?seq="+<?php echo $_GET['seq']?>;
+		location.href="../view/movieupdateform.php?seq="+<?php echo $_GET['seq']?>;
 	}
 
 	
@@ -53,7 +53,7 @@
 	<!-- 헤더 -->
 	<?php include '../header.php'; ?>
 	
-
+	<input type="hidden" value=<?=444?> id="detialSed">;
     
     <div class="content rounded">
         <!--     	

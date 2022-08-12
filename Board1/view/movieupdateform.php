@@ -1,6 +1,20 @@
 <?php 
+include '../back/dao/movieDAO.php';
+include '../back/movieVO.php';
 
-include "../back/DAO/movieDetailDAO.php";
+$vo = new MovieVO();
+$dao = new MovieDAO();
+
+$movie_seq = $_GET['movie_seq'];
+
+// DB연결
+$servername = "127.0.0.1";  // 호스트 주소
+$dbname = "dbBoard";        // 데이터베이스 이름
+$user = "root";             // DB 아이디
+$password = "php123";       // DB 패스워드
+
+$dao->get_connetion($servername, $dbname, $user, $password);
+$vo = $dao->movieSearch($movie_seq);
 
 ?>
 
@@ -105,7 +119,7 @@ include "../back/DAO/movieDetailDAO.php";
 
 <section class="bg-dark">
     <div class="container py-4">
-    	<h3 style="text-align: center;">영화 게시</h3>
+    	<h3 style="text-align: center;">영화 수정</h3>
     	
         <div>
             <form class="movieinsertform" action="../back/DAO/movieInsertDAO.php" method="post" onsubmit="return insertCheck();">

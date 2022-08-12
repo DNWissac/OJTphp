@@ -1,5 +1,5 @@
 <?php
-include 'pdo.php';
+require_once 'pdo.php';
 
 // DB조회
 try

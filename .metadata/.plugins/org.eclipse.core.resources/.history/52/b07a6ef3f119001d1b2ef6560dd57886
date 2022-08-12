@@ -1,0 +1,12 @@
+<?php
+class MovieVO{
+    
+    private $movieTitle;
+    private $movieStory;
+    private $movieImage;
+    private $openingDate;
+    private $movieDate;
+    
+    
+    
+}

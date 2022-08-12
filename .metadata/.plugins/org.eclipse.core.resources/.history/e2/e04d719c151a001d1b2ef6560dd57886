@@ -1,0 +1,38 @@
+<?php
+require_once '../service/movieService.php';
+
+header('Content-Type: application/json');
+header("Content-Type:text/html;charset=utf-8");
+
+$sv = new MovieService();
+$voArray = $sv->movieList();
+
+
+/* 
+foreach ($voArray as $arr)
+{
+    echo $arr->getmovieTitle();
+    echo $arr->getmovieDirector();
+    echo $arr->getmovieStory();
+    echo $arr->getmovieImage();
+    echo $arr->getOpeningDate();
+}
+*/
+
+foreach ($voArray as $arr)
+{
+    $movie = array("title" => $arr->getMovieTitle(), 
+        "director" => $arr->getMovieDirector())
+    
+    $voArray['movieTitle'] = $arr->getMovieTitle();
+    $voArray['movieDirector'] = ;
+    $voArray['movieStory'] = $arr->getMovieStory();
+    $voArray['movieImage'] = $arr->getMovieImage();
+    $voArray['movieOpeningDate'] = $arr->getOpeningDate();
+}
+
+
+$output = json_encode($voArray);
+
+//json 출력
+echo $output;

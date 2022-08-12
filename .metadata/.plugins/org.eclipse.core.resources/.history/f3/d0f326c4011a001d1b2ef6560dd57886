@@ -1,0 +1,21 @@
+<?php
+class MovieMapper{
+    
+    public function MovieMapper($action){
+        
+        if ($action = 'insert') {
+            
+            mapInsert();
+        }
+        
+    }
+    
+    public function mapInsert(){
+        
+        
+        
+    }
+    
+    
+    
+}

@@ -1,6 +1,6 @@
 <?php
 // DB연결
-include 'pdo.php';
+require_once 'pdo.php';
 
 // email 값이 넘어오면 처리
 if ($_POST['email'] != null || $_POST['email'] != "") 

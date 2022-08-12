@@ -104,7 +104,7 @@
     	<h3 style="text-align: center;">영화 게시</h3>
     	
         <div>
-            <form class="movieinsertform" action="../back/DAO/movieInsertDAO.php" 
+            <form class="movieinsertform" action="../back/Service/movieInsert.php" 
             method="post" onsubmit="return insertCheck();" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="inputTitle" class="form-label mt-4">영화제목</label>

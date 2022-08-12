@@ -1,0 +1,13 @@
+<?php
+class MovieService {
+    
+    
+    
+    public function movieInsert()
+    {
+        
+    }
+    
+    
+    
+}

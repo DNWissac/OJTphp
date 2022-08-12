@@ -1,0 +1,2 @@
+<?php
+$moving = new testDAO();

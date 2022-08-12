@@ -2,4 +2,6 @@
 <section name="Workbench">
 	<section name="OptionalMessageDialog.hide.">
 	</section>
+	<section name="CallHierarchySearchScope">
+	</section>
 </section>

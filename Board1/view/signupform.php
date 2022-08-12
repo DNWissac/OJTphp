@@ -10,8 +10,8 @@
 		// 유효성 검사
 		$("#signupBtn").click(function()
 		{
+
 			var errCount = 0;
-			
 			$(".errMsg").css("display", "none");
 			$(".pwdMsg").css("display", "none");
 			$(".rePwdMsg").css("display", "none");

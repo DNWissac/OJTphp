@@ -1,0 +1,41 @@
+<?php
+// DAO include
+include '../DAO/movieDAO.php';
+
+// 영화 등록폼에서 받은 정보
+$movie_title = $_POST['movieTitle'];
+$movie_story = $_POST['movieStory'];
+$movie_date = $_POST['movieDate'];
+$movie_genre = $_POST['movieGenre'];
+$movie_director = $_POST['movieDirector'];
+
+// DB연결
+$servername = "127.0.0.1";  // 호스트 주소
+$dbname = "dbBoard";        // 데이터베이스 이름
+$user = "root";             // DB 아이디
+$password = "php123";       // DB 패스워드
+
+// 사진 변수
+
+// 임시명
+$uploaded_file_name_tmp = $_FILES['movieImage']['tmp_name'];
+
+// 파일명
+$uploaded_file_name = $_FILES['movieImage']['name'];
+$upload_folder = "image/";
+
+
+// 업로드 가능한 확장자
+$allowed_ext = array('jpg', 'jpeg', 'png');
+
+
+$movie_image = $upload_folder.$uploaded_file_name;
+move_uploaded_file($uploaded_file_name_tmp, $upload_folder.$uploaded_file_name);
+
+
+$dao = new movieDAO();
+
+$dao->get_connetion($servername, $dbname, $user, $password);
+$dao->movieInsert($movie_title, $movie_story, $movie_image, $movie_date, $movie_director, $movie_genre);
+
+
