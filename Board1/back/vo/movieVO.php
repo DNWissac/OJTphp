@@ -1,4 +1,7 @@
 <?php
+/**
+ * 영화 VO 클래스
+ */
 class MovieVO{
     
     private $movieSeq;
@@ -8,6 +11,7 @@ class MovieVO{
     private $openingDate;
     private $movieDate;
     private $movieDirector;
+    private $genreId;
     
     /**
      * @return mixed
@@ -66,6 +70,14 @@ class MovieVO{
     }
 
     /**
+     * @return mixed
+     */
+    public function getGenreId()
+    {
+        return $this->genreId;
+    }
+
+    /**
      * @param mixed $movieSeq
      */
     public function setMovieSeq($movieSeq)
@@ -116,13 +128,20 @@ class MovieVO{
     /**
      * @param mixed $movieDirector
      */
-    public function setMovieDirector($movieDirector) {
+    public function setMovieDirector($movieDirector)
+    {
         $this->movieDirector = $movieDirector;
     }
 
+    /**
+     * @param mixed $genreId
+     */
+    public function setGenreId($genreId)
+    {
+        $this->genreId = $genreId;
+    }
+
     
-    
-   
     
     
     

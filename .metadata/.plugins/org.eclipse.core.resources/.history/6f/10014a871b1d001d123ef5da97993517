@@ -1,0 +1,11 @@
+<?php
+class UserVO{
+    
+    private $userEmail;
+    private $userPassword;
+    private $userNickname;
+    private $userAdmin;
+    
+    
+    
+}

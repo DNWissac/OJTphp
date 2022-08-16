@@ -1,0 +1,19 @@
+<?php
+require_once '../service/movieService.php';
+
+// JSON 한글 깨짐 방지
+header('Content-Type: application/json');
+header("Content-Type:text/html;charset=utf-8");
+
+$action = $_POST['action'];
+
+// $action 인수에 따라 매핑 해주는 switch문
+switch ($action)
+{
+    case 'search' : 
+        $movie_seq = $_POST['movie_seq'];
+        break;
+        
+    default :
+        echo '액션값 오류 : '.$action ;
+}

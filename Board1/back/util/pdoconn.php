@@ -6,17 +6,12 @@ class PDOconn{
     private $user = "root";             // DB 아이디
     private $password = "php123";       // DB 패스워드
     
-    
     public function get_connetion() {
-        try
-        {
+        try {
             $connect = new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->user, $this->password);
             $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            
             return $connect;
-        }
-        catch(PDOException $ex)
-        {
+        } catch(PDOException $ex) {
             throw $ex->getMessage();
         }
     }

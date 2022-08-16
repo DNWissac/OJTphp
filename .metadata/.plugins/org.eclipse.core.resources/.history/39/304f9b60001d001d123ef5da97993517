@@ -1,0 +1,18 @@
+<?php
+
+$action = $_POST['action'];
+
+echo $action;
+
+/* 
+switch ($action)
+{
+    case "search" : 
+        $movie_seq = $_GET['movie_seq'];
+        echo $movie_seq;
+        
+    default :
+        echo "액션값 오류 : ".$action ;
+}
+
+ */

@@ -1,0 +1,13 @@
+<?php
+
+$action = $_POST['action'];
+
+switch ($action)
+{
+    case "search" : 
+        
+        
+    
+}
+
+$movie_seq = $_GET['movie_seq']

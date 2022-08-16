@@ -1,0 +1,16 @@
+<?php
+
+$action = $_POST['action'];
+
+echo $action;
+
+// $action 인수에 따라 매핑 해주는 switch문
+switch ($action)
+{
+    case "search" : 
+        $movie_seq = $_GET['movie_seq'];
+        break;
+        
+    default :
+        echo "액션값 오류 : ".$action ;
+}

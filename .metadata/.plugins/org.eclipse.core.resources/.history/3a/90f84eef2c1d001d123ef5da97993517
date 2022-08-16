@@ -1,0 +1,157 @@
+<?php
+require_once '../util/pdoconn.php';
+require_once '../vo/movieVO.php';
+
+class MovieDAO {
+    
+     private $connect;
+     
+     /**
+      * DB연결 생성자
+      */
+     public function MovieDAO(){
+         $pdo = new PDOconn();
+         $this->connect = $pdo->get_connetion();
+     }
+     
+     
+     /**
+      * 영화 목록
+      * @return array
+      */
+     public function movieList() {
+         try {
+             $query = 'SELECT 
+                            nMovieSeq,
+                            sMovieTitle,
+                            sMovieStory,
+                            sMovieImage,
+                            dtOpeningDate,
+                            sMovieDirector
+                        FROM
+                            tMovieList
+                        ORDER BY
+                            dtOpeningDate DESC';
+             
+            $sql = $this->connect->prepare($query);
+            
+            $sql->execute();
+            
+            //var_dump($sql->execute());
+            
+            $voArray = array();
+            while ($row = $sql->fetch()) {
+                // VO클래스에 담아서 보내기 위해 생성
+                $vo = new MovieVO();
+                
+                $vo->setMovieSeq($row['nMovieSeq']);
+                $vo->setMovieTitle($row['sMovieTitle']);
+                $vo->setMovieDirector($row['sMovieDirector']);
+                $vo->setMovieStory($row['sMovieStory']);
+                $vo->setMovieImage($row['sMovieImage']);
+                $vo->setOpeningDate($row['dtOpeningDate']);
+                
+                array_push($voArray, $vo);
+            }
+            
+            return $voArray;
+         } catch(PDOException $ex){
+             
+             throw $ex->getMessage();
+         }
+     }
+     
+     // 영화 입력
+     public function movieAdd($movie_title, $movie_story, $movie_image, $movie_date, $movie_director, $movie_genre) {
+     
+         try {
+             $sql = "INSERT INTO tMovieList(sMovieTitle, sMovieStory, sMovieImage, dtOpeningDate, sMovieDirector, sGenreID)
+             VALUES('$movie_title', '$movie_story', '$movie_image'
+             , '$movie_date', '$movie_director', '$movie_genre')";
+             
+             $this->connect->exec($sql);
+             echo "<script>alert('영화가 성공적으로 등록되었습니다.');";
+             echo "location.href='../../index.php';</script>";
+         }
+         catch(PDOException $ex) {
+             echo "<script>alert('영화 등록에 실패했습니다.<br> 에러: ".$ex->getMessage()."')</script>";
+         }
+         
+         echo "<script>location.href='../../index.php'</script>";
+     
+     }
+     
+     // 영화 삭제
+     public function movieRemove($movie_seq){
+         
+         try {
+             $sql = "DELETE FROM 
+                        tMovieList
+                     WHERE nMovieSeq = ".$movie_seq;
+             
+             $this->connect->exec($sql);
+         }
+         catch(PDOException $ex) {
+             echo '영화 삭제에 실패했습니다. 에러:'.$ex->getMessage();
+         }
+         
+     }
+     
+     
+     // 영화 정보
+     public function movieSearch($movie_seq) {
+         $Vo = new MovieVO();
+         try {
+             $sql = $this->connect->prepare('SELECT nMovieSeq, sMovieTitle
+                    , sMovieStory, sMovieImage, dtOpeningDate, dtMovieDate, sMovieDirector
+                    FROM tMovieList
+                    WHERE nMovieSeq = :movieSeq');
+             
+             $sql->bindValue(':movieSeq', $movie_seq);
+             $sql->execute();
+             
+             while($row = $sql->fetch()){
+                 $Vo->setMovieSeq($row['nMovieSeq']);
+                 $Vo->setMovieImage($row['sMovieImage']);
+                 $Vo->setMovieTitle($row['sMovieTitle']);
+                 $Vo->setMovieStory($row['sMovieStory']);
+                 $Vo->setMovieDirector($row['sMovieDirector']);
+                 $Vo->setOpeningDate($row['dtOpeningDate']);
+             }
+         }
+         catch(PDOException $ex) {
+             echo "레코드 선택 실패!: ".$ex->getMessage()."<br>";
+         }
+         
+         return $Vo;
+         
+     }
+     
+     // 영화 수정
+     public function movieModify(MovieVO $Vo) {
+         
+         try {
+            $movieSeq = $Vo->getMovieSeq();
+            $movieTitle = $Vo->getMovieTitle();
+            $movieStory = $Vo->getMovieStory();
+            $movieImage = $Vo->getMovieImage();
+            $movieDate = $Vo->getOpeningDate();
+            $movieDirector = $Vo->getMovieDirector();
+             
+            $sql = "update tMovieList set sMovieTitle = '$movieTitle', sMovieStory = '$movieStory'
+                    , sMovieImage = '$movieImage', dtOpeningDate = '$movieDate', sMovieDirector = '$movieDirector'
+                     where nMovieSeq = $movieSeq";
+            
+            $this->connect->exec($sql);
+            echo "<script>alert('영화가 성공적으로 수정되었습니다.');";
+            echo "location.href='../../index.php';</script>";
+
+            
+         }
+         catch(PDOException $ex) {
+             echo "<script>alert('영화 수정에 실패했습니다.<br> 에러: ".$ex->getMessage()."')</script>";
+         }
+         
+     }
+    
+}

@@ -1,0 +1,36 @@
+<?php
+require_once '../service/userService.php';
+
+// 로그인 폼에서 받은 정보
+$action = $_POST['action'];
+
+// 유저 서비스 호출
+$sv = new UserService();
+
+// $action 인수에 따라 매핑 해주는 switch문
+switch ($action)
+{
+    // 로그인
+    case 'signin' :
+        $userEmail = $_POST['userEmail'];
+        $userPassword = $_POST['userPassword'];
+        
+        $sv->signIn($userEmail, $userPassword);
+        
+        //case 'signin' 종료
+        break;
+        
+    // 유저 리스트
+    case 'list' :
+        
+        $voArray = $sv->userList();
+        $user = array();
+        
+        
+        //case 'list' 종료
+        break;
+        
+    default :
+        echo '액션값 오류 : '.$action ;
+}
+

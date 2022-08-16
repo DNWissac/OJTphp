@@ -7,50 +7,85 @@
 
 	$().ready(function(){
 
-		// 최신순으로 조회버튼 클릭 시
+		// 영화 최신순 조회 버튼 클릭 시
 		$("#latestList").click(function(){
 
+			// 버튼을 다시 눌렀을 때 중복으로 나오지 않게 하도록 테이블 초기화
+			$("#input_data>thead").empty();
+			$("#input_data>tbody").empty();
+
+			// ajax로 리스트 출력
 			$.ajax({
-				url:"back/mapper/movieListMapper.php",
+				url:"back/mapper/movieMapper.php",
 				type:"post",
+				data:{action:"movieList"} ,
 				success : function(data){
+
+					// JSON으로 날아온 값 변환
 					let obj = JSON.parse(data);
+
+					$("#input_data>thead").append("<tr>");
+					$("#input_data>thead").append("<th>영화제목</th>");
+					$("#input_data>thead").append("<th>감독</th><th>줄거리</th>");
+					$("#input_data>thead").append("<th>사진</th><th>개봉일</th></tr>");
 					
-					let htmlOut = 
-					"<thead><tr><th>"
-					+"영화제목</th>"
-					+"<th>감독</th><th>줄거리</th>"
-					+"<th>사진</th><th>개봉일</th></tr>"
-					+"</thead><tbody>"
-					+"<tr><td><a href='view/moviedetail.php?seq="+obj.movieSeq+"'>"+obj.movieTitle+"</td>"
-					+"<td>"+obj.movieDirector+"</td>"
-					+"<td>"+obj.movieStory+"</td>"
-					+"<td><img src='"+obj.movieImage+"' alt='사진 없음'></td>"
-					+"<td>"+obj.openingDate+"</td></tr>"
-					+"</tbody>";
-					
-					$("#input_data").html(htmlOut);
+					for (var i = 0; i < obj.length; i++){
+						
+						$("#input_data>tbody").append("<tr>");
+						$("#input_data>tbody").append("<td><a href='view/moviedetail.php?seq="+obj[i].movieSeq+"'>"+obj[i].movieTitle+"</td>");
+						$("#input_data>tbody").append("<td>"+obj[i].movieDirector+"</td>");
+						$("#input_data>tbody").append("<td>"+obj[i].movieStory+"</td>");
+						$("#input_data>tbody").append("<td><img src='"+obj[i].movieImage+"' alt='사진 없음'></td>");
+						$("#input_data>tbody").append("<td>"+obj[i].openingDate+"</td></tr>");
 					}
-			});
+				}
 			
+			});
 			
 		});
 
 		// 사용자 조회 클릭 시
 		$("#userList").click(function(){
+
+			// 버튼을 다시 눌렀을 때 중복으로 나오지 않게 하도록 테이블 초기화
+			$("#input_data>thead").empty();
+			$("#input_data>tbody").empty();
 			
 			$.ajax({
-				url:"back/DAO/userListDAO.php",
+				url:"back/mapper/userMapper.php",
 				type:"post",
-			}).done(function(data){
-				$("#input_data").html(data);
+				data:{action:"list"},
+				success: function (data){
+					
+					// JSON으로 날아온 값 변환
+					let obj = JSON.parse(data);
+
+					$("#input_data>thead").append("<tr>");
+					$("#input_data>thead").append("<th>이메일</th>");
+					$("#input_data>thead").append("<th>닉네임</th><th>관리자여부</th>");
+
+					for (var i = 0; i < obj.length; i++){
+						$("#input_data>tbody").append("<tr>");
+						$("#input_data>tbody").append("<td>"+obj[i].userEmail+"</td>");
+						$("#input_data>tbody").append("<td>"+obj[i].userNickName+"</td>");
+
+						if (obj[i].userAdmin == 1)
+							$("#input_data>tbody").append("<td>관리자</td></tr>");
+						else
+							$("#input_data>tbody").append("<td>일반사용자</td></tr>");
+					}
+				}
+
+				
 			});
 			
 		});
 
 		// 초기화 버튼 클릭 시
 		$("#resetList").click(function(){
-			$("#input_data").empty();
+			$("#input_data>thead").empty();
+			$("#input_data>tbody").empty();
+			$("#latestList").on("click");
 		});
 
 		$("#movieInsertBtn").click(function(){
@@ -62,7 +97,6 @@
 </script>
 
 <style type="text/css">
-
     table
     {
         width: 100%;
@@ -79,7 +113,6 @@
         width: 100px;
         height: 150px;
     }
-    
 </style>
 <title>메인페이지</title>
 
@@ -96,34 +129,33 @@
 	<?php include 'header.php'; ?>
 	
 	<hr>
-    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" id="latestList" href="#;">
-          영화 최신 순 조회
-          </a>
-        </li>
-        <!-- 관리자만 가능한 사용자 조회 -->
-        <?php if($_SESSION['userAdmin'] == 1){ ?>
-		<li class="nav-item">
-          <a class="nav-link active" id="userList" href="#;">
-          사용자 조회
-          </a>
-        </li>
-    	<?php }?>
-        <li class="nav-item">
-          <a class="nav-link" id="resetList" href="#;">
-          초기화
-          </a>
-        </li>
-    </ul>
+    <table>
+    	<tr>
+    		<th>
+          		<button type="button" class="btn btn-info" id="latestList">영화 최신순 조회</button>
+          	</th>
+          	<?php if($_SESSION['userAdmin'] == 1){ ?>
+          	<th>
+          		<button type="button" class="btn btn-info" id="userList">사용자 조회</button>
+          	</th>
+          	<?php }?>
+          	<?php if ($_SESSION['userAdmin'] == 1){?>
+          	<th>
+        		<button type="button" class="btn btn-success" id="movieInsertBtn">영화 등록</button>
+        	</th>
+        	<?php }?>
+        	<th>
+        		<button type="button" class="btn btn-danger" id="resetList">초기화</button>
+          	</th>
+    	</tr>
+    </table>
     
 	<!-- 관리자의 경우 영화 등록 가능 -->
-	<?php if ($_SESSION['userAdmin'] == 1){?>
-	<button type="button" class="btn btn-dark" id="movieInsertBtn">영화 등록</button>
-	<?php }?>
+	
 	
     <table class="table-light" id="input_data" style="border: 1px solid;">
-		
+		<thead></thead>
+		<tbody></tbody>
     </table>
 </div>
 

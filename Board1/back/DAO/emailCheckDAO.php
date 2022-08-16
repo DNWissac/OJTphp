@@ -3,8 +3,7 @@
 require_once 'pdo.php';
 
 // email 값이 넘어오면 처리
-if ($_POST['email'] != null || $_POST['email'] != "") 
-{
+if ($_POST['email'] != null || $_POST['email'] != "") {
     try 
     {
         // email 값 변수에 받기
@@ -19,8 +18,7 @@ if ($_POST['email'] != null || $_POST['email'] != "")
             echo $field['count'];
         }
         
-    } catch (PDOException $ex) 
-    {
+    } catch (PDOException $ex) {
         echo "레코드 선택 실패!: ".$ex->getMessage()."<br>";
     }
 }

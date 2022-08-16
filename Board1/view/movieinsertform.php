@@ -14,70 +14,105 @@
 
 <script type="text/javascript" src="../js/jquery.min.js"></script>
 <script>
-    $( function() {
-        $( "#inputDate" ).datepicker({
-          changeYear: true,
-          changeMonth: true,
-          dateFormat: "yy-mm-dd",
-          dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
-          monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
+    $(function(){
+        $("#inputDate").datepicker({
+            changeYear: true,
+            changeMonth: true,
+            dateFormat: "yy-mm-dd",
+            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+            monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
         });
-      });
+    });
 
-	function insertCheck()
-	{
-		var title = $("#inputTitle").val();
-		var story = $("#inputStory").val();
-		var image = $("#inputImage").val();
-		var date = $("#inputDate").val();
-		var director = $("#inputDirector").val();
-
-		$(".errMsg").css("display", "none");
-		
-		if (title == "" || title == null)
-		{
-			$("#inputTitle").focus();
-			$(".titleMsg").css("display", "inline");
-			return false;
-		}
-		if (director == "" || director == null)
-		{
-			$("#inputDirector").focus();
-			$(".directorMsg").css("display", "inline");
-			return false;
-		}
-		if (story == "" || story == null)
-		{
-			$("#inputStory").focus();
-			$(".storyMsg").css("display", "inline");
-			return false;
-		}
-		if (image == "" || image == null)
-		{
-			$("#inputImage").focus();
-			$(".imageMsg").css("display", "inline");
-			return false;
-		}
-		if (date == "" || date == null)
-		{
-			$("#inputDate").focus();
-			$(".dateMsg").css("display", "inline");
-			return false;
-		}
-
-		
-		return true;
-	}
-
+	// 해당 페이지 불러올 때 장르 종류 호출
 	$().ready(function()
 	{
+		// 장르 호출 ajax
 		$.ajax({
-			url:"../back/DAO/genreSearchDAO.php",
+			url:"../back/mapper/movieMapper.php",
 			type:"post",
-			data: $("form").serialize()
-		}).done(function(data){
-			$("#searchGenre").html(data);
-		});
+			data:{action:"genreList"},
+			error: function(data){
+				alert("에러 : " + data);
+			},
+			success: function(data){
+				// JSON으로 날아온 값 변환
+				let obj = JSON.parse(data);
+				for (var i = 0; i < obj.length; i++){
+				$("#searchGenre").append("<option value='"+obj[i].genreId+"'>"+obj[i].genreName+"</option>");
+				}
+			}
+		}); // 장르 호출 ajax 종료
+
+		// 영화 등록 버튼 클릭
+		$("#insertBtn").click(function(){
+
+			let title = $("#inputTitle").val();
+			let story = $("#inputStory").val();
+			let image = $("#inputImage").val();
+			let date = $("#inputDate").val();
+			let director = $("#inputDirector").val();
+			let genre = $("#searchGenre").val();
+
+			$(".errMsg").css("display", "none");
+			
+			if (title == "" || title == null)
+			{
+				$("#inputTitle").focus();
+				$(".titleMsg").css("display", "inline");
+				return;
+			}
+			if (director == "" || director == null)
+			{
+				$("#inputDirector").focus();
+				$(".directorMsg").css("display", "inline");
+				return;
+			}
+			if (story == "" || story == null)
+			{
+				$("#inputStory").focus();
+				$(".storyMsg").css("display", "inline");
+				return;
+			}
+			if (image == "" || image == null)
+			{
+				$("#inputImage").focus();
+				$(".imageMsg").css("display", "inline");
+				return;
+			}
+			if (date == "" || date == null)
+			{
+				$("#inputDate").focus();
+				$(".dateMsg").css("display", "inline");
+				return;
+			}
+
+			// 영화 등록 ajax
+			$.ajax({
+				url:"../back/mapper/movieMapper.php",
+				type:"post",
+	            data:{
+	            		action:"insert", 
+	            	  	movieTitle:title,
+	                    movieStory:story,
+	                    movieImage:image,
+	                    openingDate:date,
+	                    movieDirector:director,
+	                    movieGenre:genre
+	            },
+				error : function(data){
+		            alert("영화 등록 에러: " + data);
+		        },
+		        success : function(data){
+					if ($.trim(data)== "OK"){
+						alert("영화 등록 성공!");
+						location.replace("../index.php");
+					}
+					else
+						alert(data);
+		        }
+		    }); //영화 등록 ajax 종료
+		}); // 영화 버튼 클릭 function 종료
 	});
     
 </script>
@@ -101,7 +136,7 @@
 
 <section class="bg-dark">
     <div class="container py-4">
-    	<h3 style="text-align: center;">영화 게시</h3>
+    	<h3 style="text-align: center;">영화 등록</h3>
     	
         <div>
             <form class="movieinsertform" action="../back/Service/movieInsert.php" 
@@ -148,7 +183,7 @@
                 <br>
                 
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-warning" id="insertBtn">영화 게시</button>
+                    <button type="button" class="btn btn-warning" id="insertBtn">영화 등록</button>
                     <button type="button" class="btn btn-secondary" onclick="location.href='../index.php'">
                     	취소
                     </button>

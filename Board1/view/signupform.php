@@ -10,33 +10,28 @@
 		// 유효성 검사
 		$("#signupBtn").click(function()
 		{
-
-			var errCount = 0;
 			$(".errMsg").css("display", "none");
 			$(".pwdMsg").css("display", "none");
 			$(".rePwdMsg").css("display", "none");
 
-			var email = $("#inputEmail").val();
-			var password = $("#inputPassword").val();
-			var rePwd = $("#inputRePassword").val();
-			var nickName = $("#inputNickName").val();
+			let email = $("#inputEmail").val();
+			let password = $("#inputPassword").val();
+			let rePwd = $("#inputRePassword").val();
+			let nickName = $("#inputNickName").val();
 
 			// 비밀번호 유효성검사용
-			var num = password.search(/[0-9]/g);
-			var eng = password.search(/[a-z]/ig);
-			var spe = password.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+			let num = password.search(/[0-9]/g);
+			let eng = password.search(/[a-z]/ig);
+			let spe = password.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
 
 			// 이메일 유효성검사용
-			var exptext = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+			let exptext = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
 
 			// 이메일이 입력되지 않은 경우
 			if (email == "" || email == null || exptext.test(email)==false){
-				
 				$("#inputEmail").focus();
 				$(".emailMsg").text("이메일을 입력해 주세요.");
 				$(".emailMsg").css("display", "inline");
-				//alert("이메일을 입력해 주세요.");
-				errCount++;
 			}
 
 			// 이메일이 유효하지 않은 경우
@@ -44,7 +39,6 @@
 				$("#inputEmail").focus();
 				$(".emailMsg").text("이메일 형식이 올바르지 않습니다.");
 				$(".emailMsg").css("display", "inline");
-				errCount++;
 			}
 
 			// 이메일의 길이가 너무 긴 경우
@@ -52,11 +46,10 @@
 				$("#inputEmail").focus();
 				$(".emailMsg").text("이메일이 너무 깁니다.");
 				$(".emailMsg").css("display", "inline");
-				errCount++;
 			}
 
 			// 이메일 중복확인
-			$.post(
+			/* $.post(
 					"../back/DAO/emailCheckDAO.php",
 					{ email : email },
 					function (data){
@@ -68,7 +61,7 @@
 						}
 					}
 					
-			);
+			); */
 			
 
 			// 비밀번호가 입력되지 않은 경우
@@ -138,7 +131,7 @@
 			}
 
 			// 닉네임 중복확인
-			$.post(
+			/* $.post(
 					"../back/DAO/nickNameCheckDAO.php",
 					{ nickName : nickName },
 					function (data){
@@ -150,16 +143,29 @@
 						}
 					}
 					
-			);
+			); */
 
-			// 모든 조건이 충족되면 submit
-			if (errCount == 0)
-			{
-				$(".signform").submit();
-			}
-
-			
-		});
+			// ajax로 회원가입 처리
+			$.ajax({
+				url:"../back/mapper/userMapper.php",
+				type:"post",
+				data:{action:"signup", 
+					  userEmail:email,
+					  userPassword:password,
+					  userNickName:nickName},
+				error : function(data){
+		            alert("회원가입 에러 : " + data);
+		        },
+		        success : function(data){
+					if ($.trim(data)== "OK"){
+						alert("회원가입에 성공하셨습니다.");
+						location.replace("../index.php");
+					}
+					else
+						alert(data);
+		        }
+		    }); // #signupBtn ajax 종료
+		}); // #signupBtn click 함수 종료
 	});
 
 

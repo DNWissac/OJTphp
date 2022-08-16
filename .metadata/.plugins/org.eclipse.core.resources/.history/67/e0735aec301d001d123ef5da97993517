@@ -1,0 +1,8 @@
+<?php
+class UserVO{
+    
+    private $genreId;
+    private $genreName;
+    
+    
+}
