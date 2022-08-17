@@ -1,7 +1,0 @@
-<?php
-
-// 로그인 폼에서 받은 정보
-$user_email = $_POST['userEmail'];
-$user_password = $_POST['userPassword'];
-
-echo $user_email;

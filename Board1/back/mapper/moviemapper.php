@@ -60,19 +60,41 @@ switch ($action) {
         
         $sv->movieInsert($movieTitle, $movieStory, $movieImage, $openingDate, $movieDirector, $movieGenre);
         break;
+    // 영화 수정
+    case 'update' :
+        $movieSeq = $_POST['movieSeq'];
+        $movieTitle = $_POST['movieTitle'];
+        $movieStory = $_POST['movieStory'];
+        $openingDate = $_POST['openingDate'];
+        $movieGenre = $_POST['movieGenre'];
+        $movieDirector = $_POST['movieDirector'];
         
+        $uploaded_file_name_tmp = $_FILES['movieImage']['tmp_name'];
+        $uploaded_file_name = $_FILES['movieImage']['name'];
+        $upload_folder = "image/";
+        
+        $movieImage = $upload_folder.$uploaded_file_name;
+        $sv->movieUpdate($movieSeq, $movieTitle, $movieStory, $movieImage, $openingDate, $movieDirector, $movieGenre);
+        
+        break;
     // 영화 상세정보
     case 'search' : 
         $movie_seq = $_POST['movie_seq'];
         $vo = $sv->movieSearch($movie_seq);
+        $result = array();
         
         // VO클래스로 날아온 데이터 꺼내서 배열에 넣기
-        $arr = array('movieTitle' => $vo->getMovieTitle(),
+        array_push($result, array('movieTitle' => $vo->getMovieTitle(),
             'movieDirector' => $vo->getMovieDirector(),
             'movieStory' => $vo->getMovieStory(),
             'movieImage' => $vo->getMovieImage(),
             'openingDate' => $vo->getOpeningDate(),
-            'movieSeq' => $vo->getMovieSeq());
+            'movieSeq' => $vo->getMovieSeq(),
+            'genreId' => $vo->getGenreId()
+            )
+        );
+        
+        $arr['result'] = $result;
         
         // JSON 방식으로 인코딩해서 출력
         $json = json_encode($arr);
@@ -83,11 +105,17 @@ switch ($action) {
     
     // 영화 리스트
     case 'movieList' :
-        $voArray = $sv->movieList();
-        $movie= array();
+        $startPageNum = $_POST['startPageNum'];
+        
+        $voArray = $sv->movieList((int)$startPageNum);
+        $movieCount = $sv->movieCount();
+        $movie = array();
+        $result = array();
+        
+        $movie['movieCount'] = $movieCount;
         
         foreach ($voArray as $arr){
-            array_push($movie, array(
+            array_push($result, array(
                 'movieTitle' => $arr->getMovieTitle(),
                 'movieDirector' => $arr->getMovieDirector(),
                 'movieStory' => $arr->getMovieStory(),
@@ -97,6 +125,9 @@ switch ($action) {
                 )
             );
         }
+        
+        $movie['result'] = $result;
+        
         
         // JSON 방식으로 인코딩해서 출력
         $json = json_encode($movie);

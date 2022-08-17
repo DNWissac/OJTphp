@@ -11,8 +11,8 @@ class MovieService {
         $this->dao = new MovieDAO();
     }
     
-    public function movieSearch($movie_seq){
-        return $this->dao->movieSearch($movie_seq);
+    public function movieSearch($movieSeq){
+        return $this->dao->movieSearch($movieSeq);
     }
     
     public function movieInsert($movieTitle, $movieStory, $movieImage, $openingDate, $movieDirector, $movieGenre){
@@ -28,21 +28,34 @@ class MovieService {
         $this->dao->movieAdd($vo);
     }
     
-    public function movieUpdate(){
+    public function movieUpdate($movieSeq, $movieTitle, $movieStory, $movieImage, $openingDate, $movieDirector, $movieGenre){
+        $vo = new MovieVO();
         
+        $vo->setMovieSeq($movieSeq);
+        $vo->setMovieTitle($movieTitle);
+        $vo->setMovieStory($movieStory);
+        $vo->setMovieImage($movieImage);
+        $vo->setOpeningDate($openingDate);
+        $vo->setMovieDirector($movieDirector);
+        $vo->setGenreId($movieGenre);
+        
+        $this->dao->movieModify($vo);
     }
     
-    public function movieDelete($movie_seq){
-        return $this->dao->movieRemove($movie_seq);
+    public function movieDelete($movieSeq){
+        return $this->dao->movieRemove($movieSeq);
     }
     
-    public function movieList(){
-        return $this->dao->movieList();
+    public function movieList($startNum){
+        return $this->dao->movieList($startNum);
     }
     
     public function genreList(){
         return $this->dao->genreList();
     }
     
+    public function movieCount(){
+        return $this->dao->movieCount();
+    }
     
 }

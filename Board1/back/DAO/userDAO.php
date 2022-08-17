@@ -106,6 +106,8 @@ class userDAO {
       * @param string $userNickName
       */
      public function signUp(UserVO $vo) {
+        $result = 0;
+         
         try {
             $encrypted_passwd = password_hash($vo->getUserPassword(), PASSWORD_DEFAULT);
             $query = 'INSERT INTO 
@@ -118,14 +120,82 @@ class userDAO {
             $sql->bindValue(':userEmail', $vo->getUserEmail());
             $sql->bindValue(':userPassword', $encrypted_passwd);
             $sql->bindValue(':userNickName', $vo->getUserNickName());
-            $sql->execute();
             
-            echo 'OK';
+            $result = var_dump($sql->execute());
         }
         catch(PDOException $ex) {
-            echo '회원가입 실패, 에러: '.$ex->getMessage();
+            $result = 'PDOException: '.$ex->getMessage();
         }
+        
+        return $result;
      }
+     
+     /**
+      * 이메일 중복검사
+      * @param string $userEmail
+      * @return number
+      */
+     public function emailCheck($userEmail){
+         $result = 0;
+         
+         if ($userEmail != null || $userEmail != '') {
+             try{
+                 $query = 'SELECT
+                             count(*) as count
+                           FROM
+                             tUserList
+                           WHERE 
+                             sUserEmail = :userEmail';
+                 
+                 $sql = $this->connect->prepare($query);
+                 $sql->bindValue(':userEmail', $userEmail);
+                 $sql->execute();
+                 
+                 // count 값 출력
+                 while ($row = $sql->fetch()){
+                     $result = $row['count'];
+                 }
+             } catch (PDOException $ex) {
+                 $result = 'PDOException: '.$ex->getMessage();
+             }
+         }
+         return $result;
+     }
+     
+     /**
+      * 닉네임 중복검사
+      * @param string $userNickName
+      * @return integer
+      */
+     public function nickNameCheck($userNickName){
+         $result = 0;
+         
+         if ($userNickName != null || $userNickName != ""){
+             try {
+                 // nickName 변수에 담기
+                 $query = 'SELECT 
+                            count(*) as count
+                           FROM 
+                            tUserList
+                           WHERE 
+                            sNickName = :userNickName';
+                 
+                 $sql = $this->connect->prepare($query);
+                 $sql->bindValue(':userNickName', $userNickName);
+                 $sql->execute();
+                 
+                 // count 값 출력
+                 while ($row = $sql->fetch()){
+                     $result = $row['count'];
+                 }
+                 
+             } catch (PDOException $ex){
+                 $result = "레코드 선택 실패!: ".$ex->getMessage();
+             }
+         }
+         return $result;
+     }
+     
      
      // 회원 삭제
      public function userDelete(){
@@ -142,7 +212,6 @@ class userDAO {
      
      // 회원정보 수정
      public function userUpdate() {
-         
          
          
      }

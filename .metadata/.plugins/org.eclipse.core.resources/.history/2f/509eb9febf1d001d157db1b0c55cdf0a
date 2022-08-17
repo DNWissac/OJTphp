@@ -1,0 +1,15 @@
+<?php
+class Pagination{
+    
+    public function getFirstPageNoOnPageList() {
+        $lastPageNoOnPageList = (Math.ceil(currentPageNo/10.0)) * 10;
+        
+        first
+        
+        
+        
+        
+    }
+    
+    
+}

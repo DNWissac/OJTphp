@@ -19,7 +19,7 @@ class MovieDAO {
       * 영화 목록
       * @return array
       */
-     public function movieList() {
+     public function movieList($startNum, $endNum) {
          try {
              $query = 'SELECT 
                             nMovieSeq,
@@ -31,9 +31,13 @@ class MovieDAO {
                         FROM
                             tMovieList
                         ORDER BY
-                            dtOpeningDate DESC';
+                            dtOpeningDate DESC
+                        LIMIT
+                            :startNum, 10';
              
             $sql = $this->connect->prepare($query);
+            
+            $sql->bindValue(':startNum', $startNum, PDO::PARAM_INT);
             $sql->execute();
             
             //var_dump($sql->execute());
@@ -60,7 +64,10 @@ class MovieDAO {
          }
      }
      
-     // 영화 입력
+     /**
+      * 영화 등록
+      * @param MovieVO $vo
+      */
      public function movieAdd(MovieVO $vo) {
      
          try {
@@ -107,9 +114,9 @@ class MovieDAO {
          
          try {
              $query = 'DELETE FROM 
-                        tMovieList
-                     WHERE 
-                        nMovieSeq = :movieSeq';
+                            tMovieList
+                       WHERE 
+                            nMovieSeq = :movieSeq';
              
              $sql = $this->connect->prepare($query);
              $sql->bindValue(':movieSeq', $movie_seq);
@@ -124,15 +131,32 @@ class MovieDAO {
      }
      
      
-     // 영화 정보
+     /**
+      * 영화 정보
+      * @param integer $movie_seq
+      * @return MovieVO
+      */
      public function movieSearch($movie_seq) {
          $vo = new MovieVO();
          
          try {
-             $sql = $this->connect->prepare('SELECT nMovieSeq, sMovieTitle
-                    , sMovieStory, sMovieImage, dtOpeningDate, dtMovieDate, sMovieDirector
-                    FROM tMovieList
-                    WHERE nMovieSeq = :movieSeq');
+             
+             
+             $query = 'SELECT 
+                            nMovieSeq,
+                            sMovieTitle,
+                            sMovieStory,
+                            sMovieImage, 
+                            dtOpeningDate, 
+                            dtMovieDate, 
+                            sMovieDirector, 
+                            sGenreId
+                       FROM 
+                            tMovieList
+                       WHERE 
+                            nMovieSeq = :movieSeq';
+             
+             $sql = $this->connect->prepare($query);
              
              $sql->bindValue(':movieSeq', $movie_seq);
              $sql->execute();
@@ -144,6 +168,7 @@ class MovieDAO {
                  $vo->setMovieStory($row['sMovieStory']);
                  $vo->setMovieDirector($row['sMovieDirector']);
                  $vo->setOpeningDate($row['dtOpeningDate']);
+                 $vo->setGenreId($row['sGenreId']);
              }
          }
          catch(PDOException $ex) {
@@ -154,32 +179,49 @@ class MovieDAO {
          
      }
      
-     // 영화 수정
+     /**
+      * 영화 수정
+      * @param MovieVO $vo
+      */
      public function movieModify(MovieVO $vo) {
          
          try {
-            $movieSeq = $vo->getMovieSeq();
-            $movieTitle = $vo->getMovieTitle();
-            $movieStory = $vo->getMovieStory();
-            $movieImage = $vo->getMovieImage();
-            $movieDate = $vo->getOpeningDate();
-            $movieDirector = $vo->getMovieDirector();
-             
-            $sql = "update tMovieList set sMovieTitle = '$movieTitle', sMovieStory = '$movieStory'
-                    , sMovieImage = '$movieImage', dtOpeningDate = '$movieDate', sMovieDirector = '$movieDirector'
-                     where nMovieSeq = $movieSeq";
+            $query = 'UPDATE 
+                        tMovieList
+                    SET 
+                        sMovieTitle = :movieTitle,
+                        sMovieStory = :movieStory,
+                        sMovieImage = :movieImage,
+                        dtOpeningDate = :openingDate,
+                        sMovieDirector = :movieDirector,
+                        sGenreId = :genreId
+                    WHERE 
+                        nMovieSeq = :movieSeq';
             
-            $this->connect->exec($sql);
-            echo "<script>alert('영화가 성공적으로 수정되었습니다.');";
-            echo "location.href='../../index.php';</script>";
-
+            $sql = $this->connect->prepare($query);
+            
+            $sql->bindValue(':movieTitle', $vo->getMovieTitle());
+            $sql->bindValue(':movieStory', $vo->getMovieStory());
+            $sql->bindValue(':movieImage', $vo->getMovieImage());
+            $sql->bindValue(':openingDate', $vo->getOpeningDate());
+            $sql->bindValue(':movieDirector', $vo->getMovieDirector());
+            $sql->bindValue(':genreId', $vo->getGenreId());
+            $sql->bindValue(':movieSeq', $vo->getMovieSeq(), PDO::PARAM_INT);
+            
+            $sql->execute();
+            
+            echo 'OK';
             
          } catch(PDOException $ex) {
-             echo "<script>alert('영화 수정에 실패했습니다.<br> 에러: ".$ex->getMessage()."')</script>";
+             echo '영화 수정에 실패했습니다. 에러:'.$ex->getMessage();
          }
          
      }
      
+     /**
+      * 장르 목록
+      * @return array
+      */
      public function genreList(){
          try
          {
@@ -193,6 +235,7 @@ class MovieDAO {
              $sql->execute();
              
              $voArray = array();
+             
              while($row = $sql->fetch()) {
                  $vo = new GenreVO();
                  $vo->setGenreId($row['sGenreID']);
@@ -201,9 +244,37 @@ class MovieDAO {
                  array_push($voArray, $vo);
              }
              return $voArray;
+             
          } catch(PDOException $ex) {
              echo "레코드 선택 실패!: ".$ex->getMessage()."<br>";
          }
+     }
+     
+     /**
+      * 영화 개수
+      * @return integer $count
+      */
+     public function movieCount(){
+         try
+         {
+             $query = 'SELECT
+                            count(*) as count
+                       FROM
+                            tMovieList';
+             
+             $sql = $this->connect->prepare($query);
+             $sql->execute();
+             
+             while($row = $sql->fetch()){
+                $count = $row['count'];
+             }
+             
+             return $count;
+             
+         } catch(PDOException $ex) {
+             echo "레코드 선택 실패!: ".$ex->getMessage()."<br>";
+         }
+         
      }
     
 }

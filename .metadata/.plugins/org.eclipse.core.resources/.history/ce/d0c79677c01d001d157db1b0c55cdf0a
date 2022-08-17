@@ -1,0 +1,19 @@
+<?php
+class Pagination{
+    
+    private $currentPageNo;
+    private $recordCountPerPage;
+    private $pageSize;
+    private $totalRecordCount;
+    private $realEnd;
+    
+    
+    public function getFirstPageNoOnPageList() {
+        $lastPageNoOnPageList = ceil($currentPageNo/10.0) * 10;
+        
+        $firstPageNoOnPageList = $lastPageNoOnPageList - 9;
+        return $firstPageNoOnPageList;
+    }
+    
+    
+}

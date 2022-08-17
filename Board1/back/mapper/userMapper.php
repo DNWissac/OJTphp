@@ -26,8 +26,11 @@ switch ($action) {
         $userPassword = $_POST['userPassword'];
         $userNickName = $_POST['userNickName'];
         
-        $sv->signUp($userEmail, $userPassword, $userNickName);
+        $result = $sv->signUp($userEmail, $userPassword, $userNickName);
         
+        if ($result == var_dump(true)) {
+            echo true;
+        }
         // case 'signup' 종료
         break;
         
@@ -57,6 +60,7 @@ switch ($action) {
         
         // case 'logout' 종료
         break;
+        
     default :
         echo '액션값 오류 : '.$action ;
 }

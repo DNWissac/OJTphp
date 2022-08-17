@@ -7,7 +7,7 @@
 
 	$().ready(function()
 	{
-		// 유효성 검사
+		// 프론트 유효성 검사
 		$("#signupBtn").click(function()
 		{
 			$(".errMsg").css("display", "none");
@@ -47,22 +47,6 @@
 				$(".emailMsg").text("이메일이 너무 깁니다.");
 				$(".emailMsg").css("display", "inline");
 			}
-
-			// 이메일 중복확인
-			/* $.post(
-					"../back/DAO/emailCheckDAO.php",
-					{ email : email },
-					function (data){
-						if (data >= 1){
-							$("#inputEmail").focus();
-							$(".emailMsg").text("이미 존재하는 이메일입니다.");
-							$(".emailMsg").css("display", "inline");
-							return;
-						}
-					}
-					
-			); */
-			
 
 			// 비밀번호가 입력되지 않은 경우
 			if (password == "" || password == null){
@@ -130,21 +114,6 @@
 				errCount++;
 			}
 
-			// 닉네임 중복확인
-			/* $.post(
-					"../back/DAO/nickNameCheckDAO.php",
-					{ nickName : nickName },
-					function (data){
-						if (data >= 1){
-							$("#inputNickName").focus();
-							$(".nickMsg").text("이미 존재하는 닉네임입니다.");
-							$(".nickMsg").css("display", "inline");
-							return;
-						}
-					}
-					
-			); */
-
 			// ajax로 회원가입 처리
 			$.ajax({
 				url:"../back/mapper/userMapper.php",
@@ -157,12 +126,11 @@
 		            alert("회원가입 에러 : " + data);
 		        },
 		        success : function(data){
-					if ($.trim(data)== "OK"){
-						alert("회원가입에 성공하셨습니다.");
+			        if (data == 1)
 						location.replace("../index.php");
-					}
-					else
-						alert(data);
+			        else
+				        alert(data);
+			        
 		        }
 		    }); // #signupBtn ajax 종료
 		}); // #signupBtn click 함수 종료

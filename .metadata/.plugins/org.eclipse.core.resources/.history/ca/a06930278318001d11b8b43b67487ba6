@@ -1,9 +1,0 @@
-@charset "UTF-8";
-text{
-	font-color: white;
-}
-.bg-dark{
-        height: 1200px;
-        padding-top:55px;
-        padding-bottom:75px;
-}
