@@ -36,17 +36,27 @@ switch ($action) {
         
     // 유저 리스트
     case 'list' :
-        $voArray = $sv->userList();
+        $startNum = $_POST['startPageNum'];
+        
+        $voArray = $sv->userList((int)$startNum);
+        $userCount = $sv->userCount();
+        
         $user = array();
         
+        $user['userCount'] = $userCount;
+        
+        $result = array();
+        
         foreach ($voArray as $arr){
-            array_push($user, array(
+            array_push($result, array(
                 "userEmail" => $arr->getUserEmail(),
                 "userNickName" => $arr->getUserNickName(),
                 "userAdmin" => $arr->getUserAdmin()
                 )
             );
         }
+        
+        $user['result'] = $result;
         
         $json = json_encode($user);
         echo $json;

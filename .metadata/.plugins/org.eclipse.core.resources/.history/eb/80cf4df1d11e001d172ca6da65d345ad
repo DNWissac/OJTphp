@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+
+<!-- moviedetail css/js -->
+<!-- <script type="text/javascript" src="../js/moviedetail.js"></script> -->
+<script type="text/javascript">
+	$().ready(function()
+	{
+		// 인덱스 페이지에서 넘어온 영화번호 받기
+		let movieSeq = $("#movieSeq").val();
+
+		// ajax로 해당 seq 영화정보 받아오기
+		$.ajax({
+			url:"../back/mapper/movieMapper.php",
+			type:"post",
+			data:{
+				movieSeq:movieSeq,
+				action:"search"
+			},
+			error : function(){
+	            alert("에러");
+	        },
+	        success : function(data){
+		        // JSON형식으로 수신한 데이터 처리
+	        	let obj = JSON.parse(data);
+				// result 값(리스트)
+				let detailArr = obj["result"][0];
+				$(".movieImage").append("<img src='../"+detailArr["movieImage"]+"' class='rounded' alt='사진 없음'>");
+				$(".movieTitle").append("<h1>"+detailArr["movieTitle"]+"</h1>");
+				$(".movieStory").append(detailArr["movieStory"]);
+				$(".movieScoreAvg").append(detailArr["score"]);
+	        }
+
+	    }); // ajax 종료
+
+		// ajax로 해당 seq 영화정보 받아오기
+		$.ajax({
+			url:"../back/mapper/movieMapper.php",
+			type:"post",
+			data:{
+				movieSeq:movieSeq,
+				action:"scoreList"
+			},
+			error : function(){
+	            alert("에러");
+	        },
+	        success : function(data){
+		        // JSON형식으로 수신한 데이터 처리
+	        	let obj = JSON.parse(data);
+				// result 값(리스트)
+				let scoreArr = obj["result"];
+
+				for (var i = 0; i < scoreArr.length; i++){
+					$(".scoreTable>tbody").append("<tr>");
+					$(".scoreTable>tbody").append("<th style='width: 10%;'>"+scoreArr[i]["nickName"]+"</td>");
+					$(".scoreTable>tbody").append("<td style='width: 8%;'>"+"평점 :"+scoreArr[i]["score"]+"점"+"</td>");
+					$(".scoreTable>tbody").append("<td>"+scoreArr[i]["scoreComment"]+"</td>");
+					$(".scoreTable>tbody").append("</tr>");
+
+				}					
+				
+	        }
+
+	    }); // ajax 종료
+
+		$("#inputScore").click(function()
+		{
+			let score = $("input:radio[name=radio_name]:checked").val();
+			let comment = $("#inputComment").val();
+
+			alert(score);
+			
+			$.ajax({
+				url:"../back/mapper/movieMapper.php",
+				type:"post",
+	            data:{action : "scoreInsert",
+		             movieScore : score,
+		             scoreComment : comment,
+		             movieSeq : movieSeq},
+				error : function(data){
+		            alert("평가 등록 에러: " + data);
+		        },
+		        success : function(data){
+					if ($.trim(data)== "OK"){
+						alert("평가 등록 성공!");
+						location.reload();
+					}
+					else
+						alert(data);
+		        }
+		    }); //영화 등록 ajax 종료
+			
+		})
+
+	}); // $().ready(funtion()) 종료
+
+		
+
+	function deleteClick(){
+		if (confirm("정말로 삭제하시겠습니까?")){
+			$.ajax({
+				url:"../back/mapper/movieMapper.php",
+				type:"post",
+				data:{
+					movieSeq:$("#movieSeq").val(),
+					action:"delete"
+					},
+				error : function(data){
+		            alert('에러 : '+data);
+		        },
+		        success : function(data){
+			        alert(data);
+		        	location.href="../index.php";
+		        }
+		    }); // ajax 종료
+		} // if문 종료
+	}// function deleteClick() 종료
+	
+	function updateClick() {
+		location.href="../view/movieupdateform.php?seq="+$("#movieSeq").val();
+	}// function updataClick() 종료
+
+
+
+	
+
+</script>
+<link rel="stylesheet" href="../css/movieDetail.css">
+
+<!-- 부트스트랩 css, js-->
+<link rel="stylesheet" href="../css/bootstrap.min.css">
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+
+</head>
+<body>
+
+<div class="container py-4">
+	<!-- 헤더 -->
+	<?php include '../header.php'; ?>
+	
+	<!-- 넘어온 영화 번호 저장 -->
+	<input type="hidden" value="<?php echo $_GET['seq']?>" id="movieSeq">
+	
+    <div class="content shadow-lg p-3 mb-5 bg-body rounded">
+        <div class="movieImage"></div>
+        
+        <div class="movieInfomation">
+        	<div class="movieTitle"></div>
+        	<p class="fs-5 movieStory"></p>
+        	<p class="fs-3 movieScoreAvg">평점 : </p>
+        	<div>
+        		<button type='button' class='btn btn-warning' onclick='updateClick();'>수정</button>
+    			<button type='button' class='btn btn-dark' onclick='deleteClick();' >삭제</button>
+    		</div>
+        </div>
+    </div>
+    
+    <div class="movieScore">
+            <?php if(isset($_SESSION['userEmail'])){?>
+            <div>
+            	<p>평점
+            	<label><input type="radio" id="scoreRadio" name="scoreRadio" checked="checked" value="1">1</label>
+				<input type="radio" id="scoreRadio" name="scoreRadio" value="2">2
+				<input type="radio" id="scoreRadio" name="scoreRadio" value="3">3
+				<input type="radio" id="scoreRadio" name="scoreRadio" value="4">4
+				<input type="radio" id="scoreRadio" name="scoreRadio" value="5">5
+				</p>
+				
+        		  <textarea class="form-control" placeholder="간략한 평가 내용(최대 450자)" id="inputComment" style="height: 100px"></textarea>
+        		<button type="button" class="btn btn-primary" id="inputScore">등록</button>
+        	</div>
+        	<?php }?>
+        	
+        	<div class="scoreList">
+        		<table class="scoreTable table">
+        			<thead>
+        			</thead>
+        			<tbody>
+        			</tbody>
+        		</table>
+        	</div>
+        </div>
+</div>
+
+
+</body>
+</html>

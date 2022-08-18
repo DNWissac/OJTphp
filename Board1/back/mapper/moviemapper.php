@@ -22,9 +22,8 @@ switch ($action) {
         // 사진 변수
         $uploaded_file_name_tmp = $_FILES['movieImage']['tmp_name'];
         $uploaded_file_name = $_FILES['movieImage']['name'];
-        $upload_folder = "image/";
+        $upload_folder = $_SERVER['DOCUMENT_ROOT']."/image/";
         
-        /*
         // 에러
         $error = $_FILES['movieImage']['error'];
         
@@ -52,11 +51,14 @@ switch ($action) {
             echo '허용되지 않는 확장자입니다.';
             exit;
         }
-        */
         
-        $movieImage = $upload_folder.$uploaded_file_name;
+        // 중복 방지용
+        $uploaded_file_name = time().$uploaded_file_name;
+        
         // 파일 이동
         move_uploaded_file($uploaded_file_name_tmp, $upload_folder.$uploaded_file_name);
+
+        $movieImage = "image/".$uploaded_file_name;
         
         $sv->movieInsert($movieTitle, $movieStory, $movieImage, $openingDate, $movieDirector, $movieGenre);
         break;
@@ -69,18 +71,19 @@ switch ($action) {
         $movieGenre = $_POST['movieGenre'];
         $movieDirector = $_POST['movieDirector'];
         
-        $uploaded_file_name_tmp = $_FILES['movieImage']['tmp_name'];
+/*      $uploaded_file_name_tmp = $_FILES['movieImage']['tmp_name'];
         $uploaded_file_name = $_FILES['movieImage']['name'];
         $upload_folder = "image/";
         
-        $movieImage = $upload_folder.$uploaded_file_name;
-        $sv->movieUpdate($movieSeq, $movieTitle, $movieStory, $movieImage, $openingDate, $movieDirector, $movieGenre);
+        $movieImage = $upload_folder.$uploaded_file_name; */
+        $sv->movieUpdate($movieSeq, $movieTitle, $movieStory, $openingDate, $movieDirector, $movieGenre);
         
         break;
     // 영화 상세정보
     case 'search' : 
-        $movie_seq = $_POST['movie_seq'];
-        $vo = $sv->movieSearch($movie_seq);
+        $movieSeq = $_POST['movieSeq'];
+        $vo = $sv->movieSearch($movieSeq);
+        $score = $sv->scoreSearch($movieSeq);
         $result = array();
         
         // VO클래스로 날아온 데이터 꺼내서 배열에 넣기
@@ -90,7 +93,8 @@ switch ($action) {
             'movieImage' => $vo->getMovieImage(),
             'openingDate' => $vo->getOpeningDate(),
             'movieSeq' => $vo->getMovieSeq(),
-            'genreId' => $vo->getGenreId()
+            'genreId' => $vo->getGenreId(),
+            'score' => $score
             )
         );
         
@@ -122,8 +126,7 @@ switch ($action) {
                 'movieImage' => $arr->getMovieImage(),
                 'openingDate' => $arr->getOpeningDate(),
                 'movieSeq' => $arr->getMovieSeq()
-                )
-            );
+                ));
         }
         
         $movie['result'] = $result;
@@ -138,8 +141,8 @@ switch ($action) {
     
     // 영화 삭제
     case 'delete' :
-        $movie_seq = $_POST['movie_seq'];
-        $sv->movieDelete($movie_seq);
+        $movieSeq = $_POST['movieSeq'];
+        $sv->movieDelete($movieSeq);
         
         // case 'delete' 종료
         break;
@@ -153,7 +156,7 @@ switch ($action) {
         foreach ($voArray as $arr){
             array_push($genre, array(
                 'genreId' => $arr->getGenreId(),
-                'genreName' => $arr->getGenreName(),
+                'genreName' => $arr->getGenreName()
                 )
             );
         }
@@ -163,6 +166,45 @@ switch ($action) {
         echo $json;
         
         //case 'genreList' 종료
+        break;
+        
+    // 평가 리스트
+    case 'scoreList' :
+        $movieSeq = $_POST['movieSeq'];
+        $voArray = $sv->scoreList($movieSeq);
+        
+        $score = array();
+        $result = array();
+        
+        foreach ($voArray as $arr){
+            array_push($result, array(
+                'movieSeq' => $arr->getMovieSeq(),
+                'scoreComment' => $arr->getScoreComment(),
+                'scoreDate' => $arr->getScoreDate(),
+                'score'=> $arr->getScore(),
+                'userEmail' => $arr->getUserEmail(),
+                'nickName' => $arr->getUserNickName()
+                ));
+        }
+        
+        $score['result'] = $result;
+        
+        $json = json_encode($score);
+        echo $json;
+        
+        break;
+        
+     // 평가 삽입
+    case 'scoreInsert' :
+        session_start();
+        
+        $movieSeq = $_POST['movieSeq'];
+        $movieScore = $_POST['movieScore'];
+        $scoreComment = $_POST['scoreComment'];
+        $userEmail = $_SESSION['userEmail'];
+        
+        $sv->scoreInsert($movieSeq, $userEmail, $movieScore, $scoreComment);
+        
         break;
         
     default :

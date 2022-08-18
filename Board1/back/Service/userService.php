@@ -46,19 +46,12 @@ class UserService {
         session_destroy();
     }
     
-    public function userUpdate()
-    {
-        
+    public function userCount(){
+        return $this->dao->userCount();
     }
     
-    public function userDelete()
-    {
-        
-    }
-    
-    public function userList()
-    {
-        return $this->dao->userList();
+    public function userList($startNum){
+        return $this->dao->userList($startNum);
     }
     
 }

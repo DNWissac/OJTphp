@@ -2,6 +2,7 @@
 require_once '../util/pdoconn.php';
 require_once '../vo/movieVO.php';
 require_once '../vo/genreVO.php';
+require_once '../vo/movieScoreVO.php';
 
 class MovieDAO {
     
@@ -19,7 +20,7 @@ class MovieDAO {
       * 영화 목록
       * @return array
       */
-     public function movieList($startNum, $endNum) {
+     public function movieList($startNum) {
          try {
              $query = 'SELECT 
                             nMovieSeq,
@@ -59,8 +60,8 @@ class MovieDAO {
             
             return $voArray;
          } catch(PDOException $ex){
-             
-             throw $ex->getMessage();
+             echo '영화 리스트 생성에 실패했습니다. 에러:'.$ex->getMessage();
+             exit;
          }
      }
      
@@ -69,7 +70,6 @@ class MovieDAO {
       * @param MovieVO $vo
       */
      public function movieAdd(MovieVO $vo) {
-     
          try {
              $query = "INSERT INTO 
                         tMovieList(
@@ -103,6 +103,7 @@ class MovieDAO {
          }
          catch(PDOException $ex) {
              echo '영화 등록에 실패했습니다. 에러:'.$ex->getMessage();
+             exit;
          }
      }
      
@@ -110,7 +111,7 @@ class MovieDAO {
       * 영화 삭제
       * @param integer $movie_seq
       */
-     public function movieRemove($movie_seq){
+     public function movieRemove($movieSeq){
          
          try {
              $query = 'DELETE FROM 
@@ -119,7 +120,7 @@ class MovieDAO {
                             nMovieSeq = :movieSeq';
              
              $sql = $this->connect->prepare($query);
-             $sql->bindValue(':movieSeq', $movie_seq);
+             $sql->bindValue(':movieSeq', $movieSeq);
              
              $sql->execute();
              
@@ -127,6 +128,7 @@ class MovieDAO {
          }
          catch(PDOException $ex) {
              echo '영화 삭제에 실패했습니다. 에러:'.$ex->getMessage();
+             exit;
          }
      }
      
@@ -136,12 +138,10 @@ class MovieDAO {
       * @param integer $movie_seq
       * @return MovieVO
       */
-     public function movieSearch($movie_seq) {
+     public function movieSearch($movieSeq) {
          $vo = new MovieVO();
          
          try {
-             
-             
              $query = 'SELECT 
                             nMovieSeq,
                             sMovieTitle,
@@ -158,7 +158,7 @@ class MovieDAO {
              
              $sql = $this->connect->prepare($query);
              
-             $sql->bindValue(':movieSeq', $movie_seq);
+             $sql->bindValue(':movieSeq', $movieSeq);
              $sql->execute();
              
              while($row = $sql->fetch()){
@@ -173,6 +173,7 @@ class MovieDAO {
          }
          catch(PDOException $ex) {
              echo "레코드 선택 실패!: ".$ex->getMessage()."<br>";
+             exit;
          }
          
          return $vo;
@@ -191,7 +192,6 @@ class MovieDAO {
                     SET 
                         sMovieTitle = :movieTitle,
                         sMovieStory = :movieStory,
-                        sMovieImage = :movieImage,
                         dtOpeningDate = :openingDate,
                         sMovieDirector = :movieDirector,
                         sGenreId = :genreId
@@ -202,7 +202,6 @@ class MovieDAO {
             
             $sql->bindValue(':movieTitle', $vo->getMovieTitle());
             $sql->bindValue(':movieStory', $vo->getMovieStory());
-            $sql->bindValue(':movieImage', $vo->getMovieImage());
             $sql->bindValue(':openingDate', $vo->getOpeningDate());
             $sql->bindValue(':movieDirector', $vo->getMovieDirector());
             $sql->bindValue(':genreId', $vo->getGenreId());
@@ -214,6 +213,7 @@ class MovieDAO {
             
          } catch(PDOException $ex) {
              echo '영화 수정에 실패했습니다. 에러:'.$ex->getMessage();
+             exit;
          }
          
      }
@@ -223,8 +223,7 @@ class MovieDAO {
       * @return array
       */
      public function genreList(){
-         try
-         {
+         try{
              $query = 'SELECT 
                             sGenreID,
                             sGenreName
@@ -247,16 +246,16 @@ class MovieDAO {
              
          } catch(PDOException $ex) {
              echo "레코드 선택 실패!: ".$ex->getMessage()."<br>";
+             exit;
          }
      }
      
      /**
       * 영화 개수
-      * @return integer $count
+      * @return integer|Exception
       */
      public function movieCount(){
-         try
-         {
+         try{
              $query = 'SELECT
                             count(*) as count
                        FROM
@@ -273,8 +272,128 @@ class MovieDAO {
              
          } catch(PDOException $ex) {
              echo "레코드 선택 실패!: ".$ex->getMessage()."<br>";
+             exit;
          }
          
      }
-    
+     
+     /**
+      * 영화 평가 목록
+      */
+     public function movieScoreList($movieSeq){
+         try {
+                $query = 'SELECT
+                                sScoreComment,
+                                iScore,
+                                dtScoreDate,
+                                nMovieSeq,
+                                ms.sUserEmail as sUserEmail,
+                                ul.sNickName as sNickName
+                          FROM
+                                tMovieListScore ms
+                          JOIN
+                                tUserList ul
+                          ON
+                                ms.sUserEmail = ul.sUserEmail
+                          WHERE
+                                nMovieSeq = :movieSeq
+                          ORDER BY 
+                                dtScoreDate DESC
+                          LIMIT 0, 5';
+                
+                $sql = $this->connect->prepare($query);
+                $sql->bindValue(':movieSeq', $movieSeq, PDO::PARAM_INT);
+                $sql->execute();
+                
+                $voArray = array();
+                while ($row = $sql->fetch()) {
+                    // VO클래스에 담아서 보내기 위해 생성
+                    $vo = new MovieScoreVO();
+                    
+                    $vo->setScoreComment($row['sScoreComment']);
+                    $vo->setScore($row['iScore']);
+                    $vo->setScoreDate($row['dtScoreDate']);
+                    $vo->setMovieSeq($row['nMovieSeq']);
+                    $vo->setUserEmail($row['sUserEmail']);
+                    $vo->setUserNickName($row['sNickName']);
+                    
+                    array_push($voArray, $vo);
+                }
+             return $voArray;
+                
+         }catch (PDOException $ex) {
+             echo "레코드 선택 실패!: ".$ex->getMessage()."<br>";
+             exit;
+         }
+         
+     }
+     
+     /**
+      * 영화 평가 등록
+      * @param MovieScoreVO $vo
+      */
+     public function movieScoreAdd(MovieScoreVO $vo) {
+         try {
+             $query = 'INSERT INTO tMovieListScore(
+                            sScoreComment,
+                            iScore,
+                            nMovieSeq,
+                            sUserEmail)
+                       VALUES(
+                            :scoreComment,
+                            :score,
+                            :movieSeq,
+                            :userEmail)';
+             
+             $sql = $this->connect->prepare($query);
+             
+             $sql->bindValue(':scoreComment', $vo->getScoreComment());
+             $sql->bindValue(':score', $vo->getScore(), PDO::PARAM_INT);
+             $sql->bindValue(':movieSeq', $vo->getMovieSeq(), PDO::PARAM_INT);
+             $sql->bindValue(':userEmail', $vo->getUserEmail());
+             
+             $sql->execute();
+             
+             echo 'OK';
+             
+         } catch (PDOException $ex) {
+             echo "레코드 선택 실패!: ".$ex->getMessage()."<br>";
+             exit;
+         }
+     }
+     
+     /**
+      * 점수 찾기
+      * @param integer $movieSeq
+      * @return integer
+      */
+     public function movieScoreSearch($movieSeq){
+         try {
+             $result = 0;
+             $query = 'SELECT
+                            TRUNCATE(AVG(ms.iScore),1) as score
+                       FROM
+                            tMovieList ml
+                       JOIN
+                            tMovieListScore ms
+                       ON
+                            ml.nMovieSeq = ms.nMovieSeq
+                       WHERE
+                            ms.nMovieSeq = :movieSeq';
+             
+             $sql = $this->connect->prepare($query);
+             
+             $sql->bindValue(':movieSeq', $movieSeq, PDO::PARAM_INT);
+             $sql->execute();
+             
+             while($row = $sql->fetch()){
+                 $result = $row['score'];
+             }
+         }
+         catch(PDOException $ex) {
+             echo "레코드 선택 실패!: ".$ex->getMessage()."<br>";
+             exit;
+         }
+         return $result;
+     }
 }

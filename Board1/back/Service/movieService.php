@@ -1,20 +1,40 @@
 <?php
 require_once '../dao/movieDAO.php';
 require_once '../vo/movieVO.php';
-
+require_once '../vo/movieScoreVO.php';
+/**
+ * 영화 Service 클래스
+ * @author admin
+ */
 class MovieService {
     
     private $dao;
     
-    // 생성자로 DAO 연결
+    /**
+     * 생성자로 DB 연결
+     */
     public function MovieService(){
         $this->dao = new MovieDAO();
     }
     
+    /**
+     * 영화 찾기
+     * @param integer $movieSeq
+     * @return MovieVO
+     */
     public function movieSearch($movieSeq){
         return $this->dao->movieSearch($movieSeq);
     }
     
+    /**
+     * 영화 삽입
+     * @param string $movieTitle
+     * @param string $movieStory
+     * @param string $movieImage
+     * @param string $openingDate
+     * @param string $movieDirector
+     * @param string $movieGenre
+     */
     public function movieInsert($movieTitle, $movieStory, $movieImage, $openingDate, $movieDirector, $movieGenre){
         $vo = new MovieVO();
         
@@ -28,13 +48,23 @@ class MovieService {
         $this->dao->movieAdd($vo);
     }
     
-    public function movieUpdate($movieSeq, $movieTitle, $movieStory, $movieImage, $openingDate, $movieDirector, $movieGenre){
+    /**
+     * 영화 수정
+     * @param integer $movieSeq
+     * @param string $movieTitle
+     * @param string $movieStory
+     * @param string $movieImage
+     * @param string $openingDate
+     * @param string $movieDirector
+     * @param string $movieGenre
+     */
+    public function movieUpdate($movieSeq, $movieTitle, $movieStory, $openingDate, $movieDirector, $movieGenre){
         $vo = new MovieVO();
         
         $vo->setMovieSeq($movieSeq);
         $vo->setMovieTitle($movieTitle);
         $vo->setMovieStory($movieStory);
-        $vo->setMovieImage($movieImage);
+        /* $vo->setMovieImage($movieImage); */
         $vo->setOpeningDate($openingDate);
         $vo->setMovieDirector($movieDirector);
         $vo->setGenreId($movieGenre);
@@ -42,20 +72,72 @@ class MovieService {
         $this->dao->movieModify($vo);
     }
     
+    /**
+     * 영화 삭제
+     * @param integer $movieSeq
+     * @return 
+     */
     public function movieDelete($movieSeq){
         return $this->dao->movieRemove($movieSeq);
     }
     
+    /**
+     * 영화 목록
+     * @param integer $startNum
+     * @return array
+     */
     public function movieList($startNum){
         return $this->dao->movieList($startNum);
     }
     
+    /**
+     * 장르 목록
+     * @return array
+     */
     public function genreList(){
         return $this->dao->genreList();
     }
     
+    /**
+     * 영화 개수 
+     * @return number
+     */
     public function movieCount(){
         return $this->dao->movieCount();
     }
+    
+    /**
+     * 점수 목록
+     * @param integer $movieSeq
+     * @return array
+     */
+    public function scoreList($movieSeq){
+        return $this->dao->movieScoreList($movieSeq);
+    }
+    
+    /**
+     * 점수 등록
+     * @param integer $movieSeq
+     * @param string $userEmail
+     * @param integer $score
+     * @param string $scoreComment
+     * @return array 
+     */
+    public function scoreInsert($movieSeq, $userEmail, $score, $scoreComment) {
+        $vo = new MovieScoreVO();
+        
+        $vo->setMovieSeq($movieSeq);
+        $vo->setUserEmail($userEmail);
+        $vo->setScore($score);
+        $vo->setScoreComment($scoreComment);
+        
+        return $this->dao->movieScoreAdd($vo);
+        
+    }
+    
+    public function scoreSearch($movieSeq) {
+        return $this->dao->movieScoreSearch($movieSeq);
+    }
+    
     
 }

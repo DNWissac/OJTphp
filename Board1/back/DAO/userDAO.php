@@ -24,17 +24,20 @@ class userDAO {
       * 회원 목록
       * @return array
       */
-     public function userList() {
+     public function userList($startNum) {
          try {
             $query = 'SELECT 
                             sUserEmail, 
                             sNickName, 
                             nUserAdmin
                        FROM
-                            tUserList';
+                            tUserList
+                       LIMIT
+                            :startNum, 10';
              
             $sql = $this->connect->prepare($query);
             
+            $sql->bindValue(':startNum', $startNum, PDO::PARAM_INT);
             $sql->execute();
             $voArray = array();           
             
@@ -49,6 +52,7 @@ class userDAO {
                 array_push($voArray, $vo);
             }
             return $voArray;
+            
          } catch(PDOException $ex){
             return $ex->getMessage();
          }
@@ -197,22 +201,29 @@ class userDAO {
      }
      
      
-     // 회원 삭제
-     public function userDelete(){
-         
-     }
-     
-     
-     // 회원 정보
-     public function userSearch() {
-
-         
-        
-     }
-     
-     // 회원정보 수정
-     public function userUpdate() {
-         
+     /**
+      * 유저 명수
+      * @return integer|Exception
+      */
+     public function userCount(){
+         try{
+             $query = 'SELECT
+                            count(*) as count
+                       FROM
+                            tUserList';
+             
+             $sql = $this->connect->prepare($query);
+             $sql->execute();
+             
+             while($row = $sql->fetch()){
+                 $count = $row['count'];
+             }
+             
+             return $count;
+             
+         } catch(Exception $e) {
+             return $e;
+         }
          
      }
     
