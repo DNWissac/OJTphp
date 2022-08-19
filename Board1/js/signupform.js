@@ -123,9 +123,10 @@
 		            alert("회원가입 에러 : " + data);
 		        },
 		        success : function(data){
-			        if (data == 1)
+			        if (data == 1){
 						alert("회원가입 성공!");
 						location.replace("../index.php");
+						}
 			        else
 				        alert(data);
 			        

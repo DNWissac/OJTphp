@@ -1,8 +1,7 @@
 /**
  * moviedetail.php (js)
  */
-	$().ready(function()
-	{
+	$().ready(function() {
 		// 인덱스 페이지에서 넘어온 영화번호 받기
 		let movieSeq = $("#movieSeq").val();
 
@@ -10,14 +9,14 @@
 		$.ajax({
 			url:"../back/mapper/movieMapper.php",
 			type:"post",
-			data:{
+			data: {
 				movieSeq:movieSeq,
 				action:"search"
 			},
-			error : function(){
+			error : function() {
 	            alert("에러");
 	        },
-	        success : function(data){
+	        success : function(data) {
 		        // JSON형식으로 수신한 데이터 처리
 	        	let obj = JSON.parse(data);
 				// result 값(리스트)
@@ -31,17 +30,17 @@
 	    }); // ajax 종료
 
 		// ajax로 해당 seq 댓글 받아오기
-		$.ajax({
+		$.ajax( {
 			url:"../back/mapper/movieMapper.php",
 			type:"post",
 			data:{
 				movieSeq:movieSeq,
 				action:"scoreList"
 			},
-			error : function(){
+			error : function() {
 	            alert("에러");
 	        },
-	        success : function(data){
+	        success : function(data) {
 		        // JSON형식으로 수신한 데이터 처리
 	        	let obj = JSON.parse(data);
 				// result 값(리스트)
@@ -61,8 +60,7 @@
 
 	    }); // ajax 종료
 
-		$("#inputScore").click(function()
-		{
+		$("#inputScore").click(function() {
 			let score = $("input[name=scoreRadio]:checked").val();
 			let comment = $("#inputComment").val();
 			
@@ -73,28 +71,29 @@
 		             movieScore : score,
 		             scoreComment : comment,
 		             movieSeq : movieSeq},
-				error : function(data){
-		            alert("평가 등록 에러: " + data);
+				error : function(){
+		            alert("평가 등록 에러: ");
 		        },
 		        success : function(data){
-					if ($.trim(data)== "OK"){
+					let jsonObj = JSON.parse(data);
+					
+					if(jsonObj["status"] != 200)
+						alert(jsonObj["msg"]);
+					else {
 						alert("평가 등록 성공!");
 						location.reload();
 					}
-					else
-						alert(data);
 		        }
-		    }); //영화 등록 ajax 종료
-			
+		    }); //점수 등록 ajax 종료
 		})
 
 	}); // $().ready(funtion()) 종료
 
 		
 
-	function deleteClick(){
-		if (confirm("정말로 삭제하시겠습니까?")){
-			$.ajax({
+	function deleteClick() {
+		if (confirm("정말로 삭제하시겠습니까?")) {
+			$.ajax( {
 				url:"../back/mapper/movieMapper.php",
 				type:"post",
 				data:{

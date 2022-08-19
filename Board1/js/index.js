@@ -3,7 +3,7 @@
  */
 
 	$().ready(function(){
-
+		
 		// 영화 최신순 조회 버튼 클릭 시
 		$("#latestList").click(function(){
 			

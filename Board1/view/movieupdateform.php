@@ -1,11 +1,16 @@
+<?php 
+    if ($_GET['seq'] != "" && $_GET['seq'] != null) {
+        $movieSeq = $_GET['seq'];
+    }
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <style type="text/css">
 
-    .errMsg
-    {
+    .errMsg {
         color: yellow;
         display: none;
         font-weight: bold;
@@ -35,7 +40,7 @@
 <section class="bg-dark">
     <div class="container py-4">
     	<h3 style="text-align: center;">영화 수정</h3>
-		<input type="hidden" value="<?php echo $_GET['seq']?>" id="movieSeq">
+		<input type="hidden" value="<?php echo $movieSeq;?>" id="movieSeq">
 		    	
         <div>
             <form class="movieupdateform" method="post" onsubmit="return insertCheck();">
@@ -56,8 +61,6 @@
 					<span class="errMsg genreMsg">장르를 입력 해주세요.</span><br>
                 </div>
 
-
-				
                 <br>
                 <div class="form-group">
                 	<label for="inputStory" class="form-label mt-4">줄거리</label>
@@ -65,13 +68,7 @@
                 	id="inputStory" name="movieStory"></textarea>
                 </div>
                 <span class="errMsg storyMsg">줄거리를 입력해주세요.</span><br>
-                
-<!--             <div class="form-group">
-                	<label for="inputImage" class="form-label mt-4">사진</label>
-					<input type="file" class="form-control" id="inputImage" name="movieImage">
-                </div>
-                <span class="errMsg imageMsg">사진을 넣어주세요.</span><br>
-                 -->
+               
                 <div class="form-group">
                 	<label for="inputDate" class="form-label mt-4">영화 개봉일</label>
 					<input type="text" class="form-control" id="inputDate" 

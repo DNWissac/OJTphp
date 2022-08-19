@@ -13,11 +13,12 @@ switch ($action) {
     
     // 영화 등록
     case 'insert' :
-        $movieTitle = $_POST['movieTitle'];
-        $movieStory = $_POST['movieStory'];
+        // xss 공격 방지
+        $movieTitle = htmlspecialchars($_POST['movieTitle']);
+        $movieStory = htmlspecialchars($_POST['movieStory']);
         $openingDate = $_POST['openingDate'];
         $movieGenre = $_POST['movieGenre'];
-        $movieDirector = $_POST['movieDirector'];
+        $movieDirector = htmlspecialchars($_POST['movieDirector']);
         
         // 사진 변수
         $uploaded_file_name_tmp = $_FILES['movieImage']['tmp_name'];
@@ -118,7 +119,7 @@ switch ($action) {
         
         $movie['movieCount'] = $movieCount;
         
-        foreach ($voArray as $arr){
+        foreach ($voArray as $arr) {
             array_push($result, array(
                 'movieTitle' => $arr->getMovieTitle(),
                 'movieDirector' => $arr->getMovieDirector(),
@@ -153,7 +154,7 @@ switch ($action) {
         $voArray = $sv->genreList();
         $genre = array();
         
-        foreach ($voArray as $arr){
+        foreach ($voArray as $arr) {
             array_push($genre, array(
                 'genreId' => $arr->getGenreId(),
                 'genreName' => $arr->getGenreName()
@@ -176,7 +177,7 @@ switch ($action) {
         $score = array();
         $result = array();
         
-        foreach ($voArray as $arr){
+        foreach ($voArray as $arr) {
             array_push($result, array(
                 'movieSeq' => $arr->getMovieSeq(),
                 'scoreComment' => $arr->getScoreComment(),
@@ -199,12 +200,48 @@ switch ($action) {
         session_start();
         
         $movieSeq = $_POST['movieSeq'];
-        $movieScore = $_POST['movieScore'];
+        $movieScore = (int)$_POST['movieScore'];
         $scoreComment = $_POST['scoreComment'];
+        $result = array();
+        
+        // 문자열이 입력되었는지 확인
+        if (gettype($scoreComment) != string) {
+            echo '문자가 아닌 값이 삽입되었습니다.';
+            exit;
+        }
+        // 내용이 입력되었는지 확인
+        if ($scoreComment == "" || $scoreComment == null) {
+            echo '내용을 입력해 주세요.';
+            exit;
+        }
+        // 내용이 450자 이상인지 확인
+        if (strlen($scoreComment) >= 450) {
+            echo '450자 이상은 입력할 수 없습니다.';
+            exit;
+        }
+        // 점수가 1~5점 사이인지 확인
+        else if((int)$movieScore < 1 || (int)$movieScore > 5) {
+            echo '평점은 1점부터 5점까지만 등록 가능합니다.';
+            exit;
+        }
+        
         $userEmail = $_SESSION['userEmail'];
         
-        $sv->scoreInsert($movieSeq, $userEmail, $movieScore, $scoreComment);
+        $scoreInsert = $sv->scoreInsert($movieSeq, $userEmail, $movieScore, $scoreComment);
         
+        if ($scoreInsert == true) {
+            $result['msg'] = '평가 삽입 성공';
+            $result['status'] = '200';
+            $result['desc'] = 'success';
+        }
+        else{
+            $result['msg'] = '한 명당 한번만 평가할 수 있습니다.';
+            $result['status'] = '401';
+            $result['desc'] = 'error';
+        }
+        
+        $json = json_encode($result);
+        echo $json;
         break;
         
     default :

@@ -352,14 +352,13 @@ class MovieDAO {
              $sql->bindValue(':movieSeq', $vo->getMovieSeq(), PDO::PARAM_INT);
              $sql->bindValue(':userEmail', $vo->getUserEmail());
              
-             $sql->execute();
-             
-             echo 'OK';
+             $result = $sql->execute();
              
          } catch (PDOException $ex) {
-             echo "레코드 선택 실패!: ".$ex->getMessage()."<br>";
-             exit;
+             $result = false;
          }
+         return $result;
+         
      }
      
      /**
@@ -374,10 +373,8 @@ class MovieDAO {
                             TRUNCATE(AVG(ms.iScore),1) as score
                        FROM
                             tMovieList ml
-                       JOIN
-                            tMovieListScore ms
-                       ON
-                            ml.nMovieSeq = ms.nMovieSeq
+                       INNER JOIN
+                            tMovieListScore ms ON ml.nMovieSeq = ms.nMovieSeq
                        WHERE
                             ms.nMovieSeq = :movieSeq';
              
