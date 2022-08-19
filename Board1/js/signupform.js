@@ -124,6 +124,7 @@
 		        },
 		        success : function(data){
 			        if (data == 1)
+						alert("회원가입 성공!");
 						location.replace("../index.php");
 			        else
 				        alert(data);

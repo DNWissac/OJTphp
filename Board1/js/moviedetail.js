@@ -30,7 +30,7 @@
 
 	    }); // ajax 종료
 
-		// ajax로 해당 seq 영화정보 받아오기
+		// ajax로 해당 seq 댓글 받아오기
 		$.ajax({
 			url:"../back/mapper/movieMapper.php",
 			type:"post",

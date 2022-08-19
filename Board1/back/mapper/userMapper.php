@@ -28,9 +28,8 @@ switch ($action) {
         
         $result = $sv->signUp($userEmail, $userPassword, $userNickName);
         
-        if ($result == var_dump(true)) {
-            echo true;
-        }
+        echo $result;
+        
         // case 'signup' 종료
         break;
         

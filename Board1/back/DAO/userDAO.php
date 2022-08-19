@@ -125,7 +125,7 @@ class userDAO {
             $sql->bindValue(':userPassword', $encrypted_passwd);
             $sql->bindValue(':userNickName', $vo->getUserNickName());
             
-            $result = var_dump($sql->execute());
+            $result = 1;
         }
         catch(PDOException $ex) {
             $result = 'PDOException: '.$ex->getMessage();
